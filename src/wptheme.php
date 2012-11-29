@@ -16,7 +16,7 @@ namespace pweb\wp_core;
  * @package     Fuel
  * @subpackage  Core
  */
-class WP_Theme
+class WPtheme
 {
   protected $req_php_version  = '5.3.0';
   protected $req_wp_version   = '3.0.0';
