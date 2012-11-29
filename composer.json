@@ -1,5 +1,6 @@
 {
   "name": "pweb/wp_core",
+  "version": "1.0.0",
   "require": {
     "php":          ">=5.3.0"
   }
