@@ -134,7 +134,7 @@ class WPfeature
   /**
    * Get the theme path
    */
-  public function url()
+  public function base_url()
   {
     if ( !empty($this->theme_url) ) return $this->theme_url;
 
