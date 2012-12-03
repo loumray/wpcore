@@ -12,6 +12,7 @@
 namespace pweb\wp_core\hooks;
 
 use pweb\wp_core\WPscriptTheme;
+use pweb\wp_core\WPstyleTheme;
 
 
 /**
@@ -24,6 +25,7 @@ class HookThemeScript extends WPhook
 {
 
   protected $scripts = array();
+  protected $styles  = array();
 
   public function __construct()
   {
@@ -38,6 +40,11 @@ class HookThemeScript extends WPhook
     $this->scripts[] = $script;
   }
 
+  public function add_style(WPstyleTheme $style)
+  {
+    $this->styles[] = $style;
+  }
+
   public function hook_action()
   {
     if(!empty($this->scripts))
@@ -48,6 +55,14 @@ class HookThemeScript extends WPhook
       }
     }
 
+    if(!empty($this->styles))
+    {
+      foreach($this->styles as $script)
+      {
+        $script->enqueue();
+      }
+    }
+    //clear memory after the hook action is run?
     return null;
   }
 }

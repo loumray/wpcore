@@ -23,6 +23,7 @@ class HookAdminScript extends WPhook
 {
 
   protected $scripts = array();
+  protected $styles  = array();
 
   public function __construct()
   {
@@ -37,12 +38,27 @@ class HookAdminScript extends WPhook
     $this->scripts[] = $script;
   }
 
+  public function add_style(WPstyleAdmin $style)
+  {
+    $this->styles[] = $style;
+  }
+
   public function hook_action()
   {
     if(!empty($this->scripts))
     {
       $hook = func_get_arg(0);
       foreach($this->scripts as $script)
+      {
+        //todo support page specific script
+          $script->enqueue($hook);
+      }
+    }
+
+    if(!empty($this->styles))
+    {
+      $hook = func_get_arg(0);
+      foreach($this->styles as $script)
       {
         //todo support page specific script
           $script->enqueue($hook);

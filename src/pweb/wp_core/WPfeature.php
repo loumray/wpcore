@@ -35,8 +35,6 @@ class WPfeature
 
   protected $script_hooks = array();
 
-  protected $style_hook   = array();
-
   protected $enabled = false;
 
   public function __construct($name)
@@ -47,6 +45,7 @@ class WPfeature
     $this->script_hook['theme'] = null;
     $this->script_hook['admin'] = null;
     $this->script_hook['login'] = null;
+
   }
 
   public function enable()
@@ -63,36 +62,56 @@ class WPfeature
 
   public function register()
   {
-    if($this->enable === true)
+    if($this->enabled === true)
     {
       $this->register_hooks();
     }
   }
 
-  public function add_script(WPscriptTheme $script)
+  public function add_script(WPscript $script)
   {
-    if(is_null($this->script_hook['theme']))
+    if($script instanceof WPscriptTheme)
     {
-      $this->script_hook['theme'] = new HookThemeScript();
-    }
+      if(is_null($this->script_hook['theme']))
+      {
+        $this->script_hook['theme'] = new HookThemeScript();
+      }
 
-    $this->script_hook['theme']->add_script($script);
+      $this->script_hook['theme']->add_script($script);
+    }
+    elseif($script instanceof WPscriptAdmin)
+    {
+      if(is_null($this->script_hook['admin']))
+      {
+        $this->script_hook['admin'] = new HookAdminScript();
+      }
+
+      $this->script_hook['admin']->add_script($script);
+    }
   }
 
-  public function add_script(WPscriptAdmin $script)
+  public function add_style(WPstyle $style)
   {
-    if(is_null($this->script_hook['admin']))
+    if($style instanceof WPstyleTheme)
     {
-      $this->script_hook['admin'] = new HookAdminScript();
-    }
+      if(is_null($this->script_hook['theme']))
+      {
+        $this->script_hook['theme'] = new HookThemeScript();
+      }
 
-    $this->script_hook['admin']->add_script($script);
+      $this->script_hook['theme']->add_style($style);
+    }
+    elseif($style instanceof WPstyleAdmin)
+    {
+      if(is_null($this->script_hook['admin']))
+      {
+        $this->script_hook['admin'] = new HookAdminScript();
+      }
+
+      $this->script_hook['admin']->add_style($style);
+    }
   }
 
-//   public function add_style(WPscript $script)
-//   {
-
-//   }
 
   public function add_hook(WPhook $hook)
   {
