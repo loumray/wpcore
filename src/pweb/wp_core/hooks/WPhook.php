@@ -9,7 +9,7 @@
  * @copyright  Louis-Michel Raynauld
  * @link       http://graphem.ca
  */
-namespace pweb\wp_core;
+namespace pweb\wp_core\hooks;
 
 /**
  *
