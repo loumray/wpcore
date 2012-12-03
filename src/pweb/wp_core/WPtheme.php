@@ -11,6 +11,7 @@
  */
 namespace pweb\wp_core;
 
+use pweb\wp_core\WPfeature;
 /**
  *
  * @package     pweb
@@ -21,36 +22,29 @@ class WPtheme
   protected $req_php_version  = '5.3.0';
   protected $req_wp_version   = '3.0.0';
 
-  protected $core_path;
-  protected $theme_path;
+  protected $theme_name;
 
-  protected $scripts = array();
-  protected $styles  = array();
+  protected $features = array();
 
-  public function __construct()
+  public function __construct($name)
   {
-
+    $this->theme_name = $name;
   }
 
-  public function init()
+  public function add_feature(WPfeature $feature)
   {
-    $this->clear();
-
+    $this->features[] = $feature;
   }
 
-  public function clear()
+  public function run()
   {
-    //clear useless memory stuff after init
-  }
-
-  /**
-   * Get the theme path
-   */
-  public function path()
-  {
-    if ( !empty($this->theme_path) ) return $this->theme_path;
-
-    return $this->theme_path = get_template_directory();
+    if(!empty($this->features))
+    {
+      foreach($this->features as $feature)
+      {
+        $feature->register();
+      }
+    }
   }
 
 }

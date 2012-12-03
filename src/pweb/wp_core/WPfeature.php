@@ -13,6 +13,9 @@
  */
 namespace pweb\wp_core;
 
+use pweb\wp_core\hooks\HookThemeScript;
+use pweb\wp_core\hooks\AdminThemeScript;
+
 /**
  *
  * @package     pweb
@@ -21,52 +24,103 @@ namespace pweb\wp_core;
 class WPfeature
 {
 
+  public $name;
+
+  protected $feature_slug = 'pweb';
+
   protected $scripts = array();
   protected $styles  = array();
 
   protected $hooks  = array();
 
+  protected $script_hooks = array();
+
+  protected $style_hook   = array();
+
   protected $enabled = false;
 
-  public function __construct()
+  public function __construct($name)
   {
-    $this->hooks['front_end_js'] = new \pweb\EggWhite\HookThemeScript();
-    $this->init_js();
+    $this->name = $name;
+    $this->feature_slug .= '-'.$this->name;
+
+    $this->script_hook['theme'] = null;
+    $this->script_hook['admin'] = null;
+    $this->script_hook['login'] = null;
   }
 
   public function enable()
   {
     $this->enabled = true;
+    add_theme_support($this->feature_slug);
   }
 
   public function disable()
   {
     $this->enabled = true;
+    remove_theme_support($this->feature_slug);
   }
 
-  public function init()
+  public function register()
   {
     if($this->enable === true)
     {
-      $this->init_js();
-      $this->init_css();
+      $this->register_hooks();
+    }
+  }
+
+  public function add_script(WPscriptTheme $script)
+  {
+    if(is_null($this->script_hook['theme']))
+    {
+      $this->script_hook['theme'] = new HookThemeScript();
     }
 
+    $this->script_hook['theme']->add_script($script);
   }
 
-  public function init_js()
+  public function add_script(WPscriptAdmin $script)
   {
-    $main_script = new WPscriptTheme("true", 'main-theme', $this->url() . '/js/main.js');
-    $this->hooks['front_end_js']->add_script($main_script);
-    $this->hooks['front_end_js']->register();
-//     add_action('admin_enqueue_scripts', array($this,'admin_scripts'), 100);
-  }
-  public function init_css()
-  {
-//     add_action('wp_enqueue_scripts', array($this,'theme_styles'), 100);
-//     add_action('admin_enqueue_scripts', array($this,'admin_styles'), 100);
+    if(is_null($this->script_hook['admin']))
+    {
+      $this->script_hook['admin'] = new HookAdminScript();
+    }
+
+    $this->script_hook['admin']->add_script($script);
   }
 
+//   public function add_style(WPscript $script)
+//   {
+
+//   }
+
+  public function add_hook(WPhook $hook)
+  {
+    $this->hooks[] = $hook;
+  }
+
+  public function register_hooks()
+  {
+    if(!empty($this->hooks))
+    {
+      foreach($this->hooks as $hook)
+      {
+        $hook->register();
+      }
+    }
+
+    //script hooks
+    foreach($this->script_hook as $script_hook)
+    {
+      if(!empty($script_hook))
+      {
+        $script_hook->register();
+      }
+    }
+
+    //TODO style hook
+
+  }
 
   /**
    * Get the theme path
