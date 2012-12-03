@@ -13,8 +13,8 @@ namespace pweb\wp_core;
 
 /**
  *
- * @package     Fuel
- * @subpackage  Core
+ * @package     pweb
+ * @subpackage  wp_core
  */
 class WPtheme
 {
@@ -24,25 +24,25 @@ class WPtheme
   protected $core_path;
   protected $theme_path;
 
+  protected $scripts = array();
+  protected $styles  = array();
+
   public function __construct()
   {
-    $this->init();
+
   }
 
   public function init()
   {
-    echo "initted!";
+    $this->clear();
+
   }
 
-  /**
-   * Get the theme core path
-   */
-  public function core_path()
+  public function clear()
   {
-    if ( !empty($this->core_path) ) return $this->core_path;
-
-    return $this->core_path = get_template_directory().'/pweb/core';
+    //clear useless memory stuff after init
   }
+
   /**
    * Get the theme path
    */
