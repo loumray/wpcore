@@ -35,7 +35,13 @@ class WPfeature
 
   protected $script_hooks = array();
 
-  protected $enabled = false;
+  protected $features = array();
+
+  protected $enabled = true;
+
+  protected $asset_path = 'assets/';
+  protected $css_path   = 'css';
+  protected $js_path    = 'js';
 
   public function __construct($name)
   {
@@ -51,13 +57,31 @@ class WPfeature
   public function enable()
   {
     $this->enabled = true;
-    add_theme_support($this->feature_slug);
+//     add_theme_support($this->feature_slug);
   }
 
   public function disable()
   {
     $this->enabled = true;
-    remove_theme_support($this->feature_slug);
+//     remove_theme_support($this->feature_slug);
+  }
+
+  public function add_feature(WPfeature $feature)
+  {
+    $this->features[] = $feature;
+  }
+
+  public function run()
+  {
+    if(!empty($this->features))
+    {
+      foreach($this->features as $feature)
+      {
+        $feature->register();
+      }
+    }
+
+    $this->register();
   }
 
   public function register()
@@ -158,6 +182,25 @@ class WPfeature
     if ( !empty($this->theme_url) ) return $this->theme_url;
 
     return $this->theme_url = get_template_directory_uri();
+  }
+
+  /**
+   * Get the theme css url
+   */
+  public function css_url()
+  {
+    if ( !empty($this->css_url) ) return $this->css_url;
+
+    return $this->css_url = $this->base_url().'/'.$this->asset_path.$this->css_path;
+  }
+  /**
+   * Get the theme js url
+   */
+  public function js_url()
+  {
+    if ( !empty($this->js_url) ) return $this->js_url;
+
+    return $this->js_url = $this->base_url().'/'.$this->asset_path.$this->js_path;
   }
 
 }
