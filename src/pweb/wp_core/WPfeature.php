@@ -26,7 +26,7 @@ class WPfeature
 
   public $name;
 
-  protected $feature_slug = 'pweb';
+  protected $slug = 'pweb';
 
   protected $scripts = array();
   protected $styles  = array();
@@ -43,10 +43,12 @@ class WPfeature
   protected $css_path   = 'css';
   protected $js_path    = 'js';
 
-  public function __construct($name)
+  protected $views_path = 'pweb/views/';
+
+  public function __construct($name, $slug)
   {
     $this->name = $name;
-    $this->feature_slug .= '-'.$this->name;
+    $this->slug = $slug;
 
     $this->script_hook['theme'] = null;
     $this->script_hook['admin'] = null;
@@ -137,7 +139,7 @@ class WPfeature
   }
 
 
-  public function add_hook(WPhook $hook)
+  public function add_hook($hook)
   {
     $this->hooks[] = $hook;
   }
@@ -173,6 +175,14 @@ class WPfeature
     if ( !empty($this->theme_path) ) return $this->theme_path;
 
     return $this->theme_path = get_template_directory();
+  }
+
+  /**
+   * Get the theme path
+   */
+  public function views_path()
+  {
+    return $this->path().'/'.$this->views_path;
   }
   /**
    * Get the theme path

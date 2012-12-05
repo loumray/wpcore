@@ -21,7 +21,6 @@ abstract class WPhook
 {
   protected $hook_type;
   protected $tag;
-  protected $function_to_add;
   protected $priority;
   protected $accepted_args;
 
