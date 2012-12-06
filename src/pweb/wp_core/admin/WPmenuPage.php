@@ -13,6 +13,8 @@
  */
 namespace pweb\wp_core\admin;
 
+use pweb\wp_core\View;
+
 /**
  *
  * @package     pweb
@@ -28,9 +30,9 @@ class WPmenuPage
   protected $icon_url    = '';
   protected $position    = null;
 
-  protected $view_file   = '';
+  protected $view       = null;
 
-  public function __construct($view_file,
+  public function __construct(View $view,
                                 $page_title = null,
                                 $menu_title = null,
                                 $menu_slug  = null,
@@ -38,7 +40,8 @@ class WPmenuPage
                                 $icon_url   = null,
                                 $position   = null)
   {
-    $this->view_file = $view_file;
+
+    $this->view = $view;
 
     if(!empty($page_title))
     {
@@ -120,11 +123,7 @@ class WPmenuPage
 
   public function view()
   {
-    if(file_exists($this->view_file))
-    {
-      include($this->view_file);
-    }
-
+    $this->view->show();
   }
 
 }

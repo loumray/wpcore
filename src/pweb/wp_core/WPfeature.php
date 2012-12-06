@@ -37,6 +37,8 @@ class WPfeature
 
   protected $features = array();
 
+  protected $option_panel = null;
+
   protected $enabled = true;
 
   protected $asset_path = 'assets/';
@@ -45,7 +47,7 @@ class WPfeature
 
   protected $views_path = 'pweb/views/';
 
-  public function __construct($name, $slug)
+  public function __construct($name, $slug, $option_panel = null)
   {
     $this->name = $name;
     $this->slug = $slug;
@@ -53,6 +55,30 @@ class WPfeature
     $this->script_hook['theme'] = null;
     $this->script_hook['admin'] = null;
     $this->script_hook['login'] = null;
+
+    $this->option_panel = $option_panel;
+
+  }
+
+  protected function init()
+  {
+    if(is_admin())
+    {
+      $this->init_admin();
+    }
+    else
+    {
+      $this->init_theme();
+    }
+  }
+
+  protected function init_theme()
+  {
+
+  }
+
+  protected function init_admin()
+  {
 
   }
 
