@@ -13,6 +13,8 @@
  */
 namespace pweb\wp_core;
 
+use pweb\wp_core\hooks\HookAdminScript;
+
 use pweb\wp_core\hooks\HookThemeScript;
 use pweb\wp_core\hooks\AdminThemeScript;
 

@@ -12,6 +12,7 @@
 namespace pweb\wp_core\hooks;
 
 use pweb\wp_core\WPscriptAdmin;
+use pweb\wp_core\WPstyleAdmin;
 
 /**
  *

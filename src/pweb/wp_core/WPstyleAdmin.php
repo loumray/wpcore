@@ -27,9 +27,12 @@ class WPstyleAdmin extends WPstyle
 
     if(!is_array($admin_page))
     {
-      $admin_page[] = $admin_page;
+      $this->admin_page[] = $admin_page;
     }
-    $this->admin_page = $admin_page;
+    else
+    {
+      $this->admin_page = $admin_page;
+    }
 
   }
 
@@ -44,7 +47,7 @@ class WPstyleAdmin extends WPstyle
   {
     if($this->is_needed($page))
     {
-      $this->enqueue();
+      parent::enqueue();
     }
   }
 }
