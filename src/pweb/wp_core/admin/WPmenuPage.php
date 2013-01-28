@@ -114,7 +114,8 @@ class WPmenuPage
 
   public function register()
   {
-    add_action('admin_menu', array($this,'hook_action'));
+    //Low priority so that all options from other features are loaded before panel is displayed
+    add_action('admin_menu', array($this,'hook_action'),10000);
   }
 
   public function hook_action() {

@@ -41,16 +41,22 @@ class WPfeature
 
   protected $enabled = true;
 
-  protected $asset_path = 'assets/';
-  protected $css_path   = 'css';
-  protected $js_path    = 'js';
+  protected $base_path = "";
+  protected $base_url  = "";
 
-  protected $views_path = 'pweb/views/';
+  protected $asset_path = 'assets/';
+  protected $css_path   = 'css/';
+  protected $js_path    = 'js/';
+
+  protected $views_path = 'views/';
 
   public function __construct($name, $slug)
   {
     $this->name = $name;
     $this->slug = $slug;
+
+    $this->base_url  = get_template_directory_uri();
+    $this->base_path = get_template_directory();
 
     $this->script_hook['theme'] = null;
     $this->script_hook['admin'] = null;
@@ -163,7 +169,7 @@ class WPfeature
   }
 
 
-  public function add_hook($hook)
+  public function add_hook(WPaction $hook)
   {
     $this->hooks[] = $hook;
   }
@@ -196,9 +202,18 @@ class WPfeature
    */
   public function path()
   {
-    if ( !empty($this->theme_path) ) return $this->theme_path;
+    if ( !empty($this->base_path) ) return $this->base_path;
 
-    return $this->theme_path = get_template_directory();
+    return $this->base_path = get_template_directory();
+  }
+  /**
+   * Get the theme assets path
+   */
+  public function assets_path()
+  {
+//     if ( !empty($this->base_path) ) return $this->base_path;
+
+//     return $this->base_path = get_template_directory();
   }
 
   /**
@@ -213,9 +228,16 @@ class WPfeature
    */
   public function base_url()
   {
-    if ( !empty($this->theme_url) ) return $this->theme_url;
+    if ( !empty($this->base_url) ) return $this->base_url;
 
-    return $this->theme_url = get_template_directory_uri();
+    return $this->base_url = get_template_directory_uri();
+  }
+  /**
+   * Get the theme assets url
+   */
+  public function assets_url()
+  {
+    return $this->base_url().'/'.$this->asset_path;
   }
 
   /**

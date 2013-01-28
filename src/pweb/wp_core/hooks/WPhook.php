@@ -11,13 +11,14 @@
  */
 namespace pweb\wp_core\hooks;
 
+use pweb\wp_core\WPaction;
 /**
  *
  * @package     pweb
  * @subpackage  wp_core
  */
 
-abstract class WPhook
+abstract class WPhook implements WPaction
 {
   protected $hook_type;
   protected $tag;

@@ -21,7 +21,7 @@ class WPscriptAdmin extends WPscript
   protected $admin_page = array();
 
 
-  public function __construct($admin_page, $handle, $src = "", $deps = array(),$ver = false, $in_footer = true)
+  public function __construct($admin_page, $handle, $src = false, $deps = array(),$ver = false, $in_footer = true)
   {
     parent::__construct($handle, $src, $deps, $ver, $in_footer);
 
@@ -44,7 +44,7 @@ class WPscriptAdmin extends WPscript
   {
     if($this->is_needed($page))
     {
-      $this->enqueue();
+      parent::enqueue();
     }
   }
 }

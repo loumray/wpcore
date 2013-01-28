@@ -21,7 +21,7 @@ class WPscriptTheme extends WPscript
   protected $load_condition = true;
 
 
-  public function __construct($load_condition, $handle, $src = "", $deps = array(),$ver = false, $in_footer = true)
+  public function __construct($load_condition, $handle, $src = false, $deps = array(),$ver = false, $in_footer = true)
   {
     parent::__construct($handle, $src, $deps, $ver, $in_footer);
 

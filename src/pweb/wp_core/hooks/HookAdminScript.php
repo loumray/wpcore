@@ -11,8 +11,8 @@
  */
 namespace pweb\wp_core\hooks;
 
-use pweb\wp_core\WPscriptAdmin;
-use pweb\wp_core\WPstyleAdmin;
+use pweb\wp_core\WPscript;
+use pweb\wp_core\WPstyle;
 
 /**
  *
@@ -26,20 +26,21 @@ class HookAdminScript extends WPhook
   protected $scripts = array();
   protected $styles  = array();
 
-  public function __construct()
+  public function __construct($priority = 100, $accepted_args = 1)
   {
     $this->hook_type = 'action';
     $this->tag       = 'admin_enqueue_scripts';
-    $this->priority  = 100;
-    $this->accepted_args = 1;
+
+    $this->priority      = $priority;
+    $this->accepted_args = $accepted_args;
   }
 
-  public function add_script(WPscriptAdmin $script)
+  public function add_script(WPscript $script)
   {
     $this->scripts[] = $script;
   }
 
-  public function add_style(WPstyleAdmin $style)
+  public function add_style(WPstyle $style)
   {
     $this->styles[] = $style;
   }
