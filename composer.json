@@ -1,8 +1,18 @@
 {
   "name": "pweb/wp_core",
   "version": "1.0.0",
+  "minimum-stability": "dev",
+  "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@pweb.beanstalkapp.com:/domlib.git",
+            "vendor-alias": "pweb"
+        }
+    ],
+    
   "require": {
-    "php":          ">=5.3.0"
+    "php":          ">=5.3.0",
+    "pweb/domlib": "master"
   },
   "autoload": {
         "psr-0": {
