@@ -11,9 +11,8 @@
  */
 namespace pweb\wp_core\hooks;
 
-use pweb\wp_core\WPscriptTheme;
-use pweb\wp_core\WPstyleTheme;
-
+use pweb\wp_core\WPscript;
+use pweb\wp_core\WPstyle;
 
 /**
  *
@@ -35,12 +34,12 @@ class HookThemeScript extends WPhook
     $this->accepted_args = 1;
   }
 
-  public function add_script(WPscriptTheme $script)
+  public function add_script(WPscript $script)
   {
     $this->scripts[] = $script;
   }
 
-  public function add_style(WPstyleTheme $style)
+  public function add_style(WPstyle $style)
   {
     $this->styles[] = $style;
   }
