@@ -21,16 +21,21 @@ namespace pweb\wp_core;
 abstract class WPajaxCall implements WPaction
 {
   protected $js_handle;
-
   protected $slug;
+  protected $admin;
+  protected $mustBeLoggedIn;
 
-  protected $admin = false;
-
-  public function __construct($call_slug, $js_handle, $admin = false)
+  public function __construct($call_slug, $js_handle, $admin = false, $mustBeLoggedIn = false)
   {
     $this->slug      = $call_slug;
     $this->js_handle = $js_handle;
     $this->admin = $admin;
+    $this->mustBeLoggedIn = $mustBeLoggedIn;
+  }
+
+  public function getSlug()
+  {
+    return $this->slug;
   }
 
   /*
@@ -48,6 +53,10 @@ abstract class WPajaxCall implements WPaction
       add_action( 'wp_enqueue_scripts', array($this,'init'),10000 );
     }
     add_action( 'wp_ajax_'.$this->slug, array($this,'callback') );
+    if(!$this->mustBeLoggedIn)
+    {
+      add_action('wp_ajax_nopriv_'.$this->slug, array($this,'callback'));
+    }
   }
 
   public function remove()
