@@ -13,17 +13,20 @@
  */
 namespace pweb\wp_core;
 
+use pweb\domlib\AjaxHandler\AjaxHandlerInterface;
+
 /**
  *
  * @package     pweb
  * @subpackage  wp_core
  */
-abstract class WPajaxCall implements WPaction
+abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
 {
   protected $js_handle;
   protected $slug;
   protected $admin;
   protected $mustBeLoggedIn;
+  protected $jsvar;
 
   public function __construct($call_slug, $js_handle, $admin = false, $mustBeLoggedIn = false)
   {
@@ -31,13 +34,18 @@ abstract class WPajaxCall implements WPaction
     $this->js_handle = $js_handle;
     $this->admin = $admin;
     $this->mustBeLoggedIn = $mustBeLoggedIn;
+    $this->jsvar = $this->slug.'_vars';
   }
 
-  public function getSlug()
+  public function getActionSlug()
   {
     return $this->slug;
   }
 
+  public function getJsVar()
+  {
+    return $this->jsvar;
+  }
   /*
    *
    * Note: Must be low priority to ensure wp_localize_scripts are run after scripts enqueues
