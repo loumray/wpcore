@@ -46,6 +46,10 @@ class WPposttype implements WPaction
       register_post_type( $this->slug , $this->args );
   }
 
+  public function getSlug()
+  {
+    return $this->slug;
+  }
   public function register()
   {
     add_action('init', array($this, 'init'));

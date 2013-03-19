@@ -46,6 +46,20 @@ abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
   {
     return $this->jsvar;
   }
+
+  public function unSerializedPostData($name)
+  {
+    $postdata = array();
+    if(!empty($_POST[$name]))
+    {
+      foreach($_POST[$name] as $info)
+      {
+        $postdata[$info['name']] = $info['value'];
+      }
+    }
+
+    return $postdata;
+  }
   /*
    *
    * Note: Must be low priority to ensure wp_localize_scripts are run after scripts enqueues
@@ -80,8 +94,4 @@ abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
 
     remove_action('wp_ajax_'.$this->slug, array($this,'hook_action'));
   }
-
-  abstract public function init();
-  abstract public function callback();
-
 }

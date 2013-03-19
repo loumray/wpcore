@@ -23,8 +23,10 @@ use pweb\wp_core\hooks\AdminThemeScript;
  * @package     pweb
  * @subpackage  wp_core
  */
-class WPfeature
+abstract class WPfeature
 {
+
+  static $instance;
 
   public $name;
 
@@ -37,7 +39,7 @@ class WPfeature
 
   protected $script_hooks = array();
 
-  protected static $features = array();
+  protected $features = array();
 
   protected $enabled = true;
 
@@ -63,6 +65,8 @@ class WPfeature
     $this->script_hook['login'] = null;
 
   }
+
+  abstract public static function getInstance();
 
   protected function init()
   {
@@ -98,16 +102,16 @@ class WPfeature
 //     remove_theme_support($this->feature_slug);
   }
 
-  public function add_feature(WPfeature $feature)
+  public function addFeature(WPfeature $feature)
   {
     $this->features[] = $feature;
   }
 
   public function run()
   {
-    if(!empty(self::$features))
+    if(!empty($this->features))
     {
-      foreach(self::$features as $feature)
+      foreach($this->features as $feature)
       {
         $feature->register();
       }
