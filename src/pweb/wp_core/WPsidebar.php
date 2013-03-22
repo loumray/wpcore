@@ -32,7 +32,7 @@ class WPsidebar implements WPaction
                         $before_widget = '<section id="%1$s" class="widget %2$s"><div class="widget-inner">',
                         $after_widget = "</div></section>",
                         $before_title = "<h3>",
-                        $after_widget = "</h3>"
+                        $after_title = "</h3>"
                       )
   {
     $this->id   = $id;
@@ -41,7 +41,7 @@ class WPsidebar implements WPaction
     $this->before_widget = $before_widget;
     $this->after_widget  = $after_widget;
     $this->before_title  = $before_title;
-    $this->after_title   = $after_widget;
+    $this->after_title   = $after_title;
   }
 
   public function init()
