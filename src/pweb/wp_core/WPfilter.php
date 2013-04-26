@@ -17,7 +17,7 @@ namespace pweb\wp_core;
  * @subpackage  wp_core
  */
 
-abstract class WPaction implements WPhook
+abstract class WPfilter implements WPhook
 {
   protected $tag;
   protected $priority;
@@ -25,20 +25,20 @@ abstract class WPaction implements WPhook
 
   abstract public function action();
 
-  public function __construct($tag, $priority = 10, $acceptedArgs = 1)
+  public function __construct($tag, $priority = 10, $accepted_args = 1)
   {
     $this->tag       = $tag;
     $this->priority  = $priority;
-    $this->argsCount = $acceptedArgs;
+    $this->argsCount = $accepted_args;
   }
 
   public function register()
   {
-    add_action($this->tag, array($this,'action'),$this->priority,$this->argsCount);
+    add_filter($this->tag, array($this,'action'),$this->priority,$this->argsCount);
   }
 
   public function remove()
   {
-    remove_action($this->tag, array($this,'action'),$this->priority,$this->argsCount);
+    remove_filter($this->tag, array($this,'action'),$this->priority,$this->argsCount);
   }
 }

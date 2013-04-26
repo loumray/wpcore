@@ -31,7 +31,7 @@ class WPtheme
     $this->theme_name = $name;
   }
 
-  public function add_feature(WPfeature $feature)
+  public function addFeature(WPfeature $feature)
   {
     $this->features[] = $feature;
   }

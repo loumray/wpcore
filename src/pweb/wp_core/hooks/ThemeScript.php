@@ -11,6 +11,8 @@
  */
 namespace pweb\wp_core\hooks;
 
+use pweb\wp_core\WPaction;
+
 use pweb\wp_core\WPscript;
 use pweb\wp_core\WPstyle;
 
@@ -20,7 +22,7 @@ use pweb\wp_core\WPstyle;
  * @subpackage  wp_core
  */
 
-class HookThemeScript extends WPhook
+class themeScript extends WPaction
 {
 
   protected $scripts = array();
@@ -28,23 +30,20 @@ class HookThemeScript extends WPhook
 
   public function __construct()
   {
-    $this->hook_type = 'action';
-    $this->tag       = 'wp_enqueue_scripts';
-    $this->priority  = 100;
-    $this->accepted_args = 1;
+    parent::__construct('wp_enqueue_scripts',100,1);
   }
 
-  public function add_script(WPscript $script)
+  public function addScript(WPscript $script)
   {
     $this->scripts[] = $script;
   }
 
-  public function add_style(WPstyle $style)
+  public function addStyle(WPstyle $style)
   {
     $this->styles[] = $style;
   }
 
-  public function hook_action()
+  public function action()
   {
     if(!empty($this->scripts))
     {

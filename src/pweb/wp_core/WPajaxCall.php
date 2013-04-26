@@ -13,16 +13,14 @@
  */
 namespace pweb\wp_core;
 
-use pweb\domlib\AjaxHandler\AjaxHandlerInterface;
-
 /**
  *
  * @package     pweb
  * @subpackage  wp_core
  */
-abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
+abstract class WPajaxCall implements WPhook
 {
-  protected $js_handle;
+  protected $jsHandle;
   protected $slug;
   protected $admin;
   protected $mustBeLoggedIn;
@@ -31,7 +29,7 @@ abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
   public function __construct($call_slug, $js_handle, $admin = false, $mustBeLoggedIn = false)
   {
     $this->slug      = $call_slug;
-    $this->js_handle = $js_handle;
+    $this->jsHandle = $js_handle;
     $this->admin = $admin;
     $this->mustBeLoggedIn = $mustBeLoggedIn || $admin;
     $this->jsvar = $this->slug.'_vars';
@@ -46,6 +44,9 @@ abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
   {
     return $this->jsvar;
   }
+
+  abstract public function init();
+  abstract public function callback();
 
   /*
    *
@@ -62,6 +63,7 @@ abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
       add_action( 'wp_enqueue_scripts', array($this,'init'),10000 );
     }
     add_action( 'wp_ajax_'.$this->slug, array($this,'callback') );
+
     if(!$this->mustBeLoggedIn)
     {
       add_action('wp_ajax_nopriv_'.$this->slug, array($this,'callback'));
@@ -79,6 +81,11 @@ abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
       remove_action( 'wp_enqueue_scripts', array($this,'init') );
     }
 
-    remove_action('wp_ajax_'.$this->slug, array($this,'hook_action'));
+    remove_action('wp_ajax_'.$this->slug, array($this,'callback'));
+
+    if(!$this->mustBeLoggedIn)
+    {
+      remove_action('wp_ajax_nopriv_'.$this->slug, array($this,'callback'));
+    }
   }
 }
