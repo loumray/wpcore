@@ -33,7 +33,7 @@ abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
     $this->slug      = $call_slug;
     $this->js_handle = $js_handle;
     $this->admin = $admin;
-    $this->mustBeLoggedIn = $mustBeLoggedIn;
+    $this->mustBeLoggedIn = $mustBeLoggedIn || $admin;
     $this->jsvar = $this->slug.'_vars';
   }
 
@@ -47,19 +47,6 @@ abstract class WPajaxCall implements WPaction,AjaxHandlerInterface
     return $this->jsvar;
   }
 
-  public function unSerializedPostData($name)
-  {
-    $postdata = array();
-    if(!empty($_POST[$name]))
-    {
-      foreach($_POST[$name] as $info)
-      {
-        $postdata[$info['name']] = $info['value'];
-      }
-    }
-
-    return $postdata;
-  }
   /*
    *
    * Note: Must be low priority to ensure wp_localize_scripts are run after scripts enqueues
