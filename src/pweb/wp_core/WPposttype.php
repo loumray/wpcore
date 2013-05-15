@@ -17,7 +17,7 @@ namespace pweb\wp_core;
  * @subpackage  wp_core
  */
 
-class WPposttype implements WPaction
+class WPposttype extends WPaction
 {
   protected $slug;
   protected $args;
