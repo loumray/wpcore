@@ -13,6 +13,8 @@
  */
 namespace pweb\wp_core\admin;
 
+use pweb\wp_core\WPaction;
+
 use pweb\wp_core\View;
 
 /**
@@ -21,7 +23,7 @@ use pweb\wp_core\View;
  * @subpackage  wp_core\\admin
  */
 
-class WPsubmenuPage
+class WPsubmenuPage extends WPaction
 {
   protected $parent_slug;
   protected $page_title;
@@ -38,6 +40,8 @@ class WPsubmenuPage
                                 $menu_slug  = 'custom-menu',
                                 $capability = 'manage_options')
   {
+    //Low priority so that all options from other features are loaded before panel is displayed
+    parent::__construct('admin_menu',10000);
 
     $this->view = $view;
 
@@ -71,13 +75,9 @@ class WPsubmenuPage
   {
     $this->menu_slug = $value;
   }
-  public function register()
-  {
-    //Low priority so that all options from other features are loaded before panel is displayed
-    add_action('admin_menu', array($this,'hook_action'),10000);
-  }
 
-  public function hook_action() {
+  public function action()
+  {
     add_submenu_page( $this->parent_slug, $this->page_title, $this->menu_title, $this->capability, $this->menu_slug, array($this,'view') );
   }
 
