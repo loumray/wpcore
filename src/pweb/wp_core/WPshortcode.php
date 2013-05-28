@@ -18,14 +18,14 @@ namespace pweb\wp_core;
  * @package     pweb
  * @subpackage  wp_core
  */
-abstract class WPshortcode implements WPaction
+abstract class WPshortcode implements WPhook
 {
 
   protected $slug;
 
   public function __construct($shortcode)
   {
-    $this->slug      = $shortcode;
+    $this->slug = $shortcode;
   }
 
   public function register()
@@ -38,6 +38,6 @@ abstract class WPshortcode implements WPaction
     remove_shortcode($this->slug);
   }
 
-  abstract public function callback($atts);
+  abstract public function callback();
 
 }

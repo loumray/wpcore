@@ -17,7 +17,7 @@ namespace pweb\wp_core;
  * @subpackage  wp_core
  */
 
-class WPsidebar implements WPaction
+class WPsidebar extends WPaction
 {
   protected $id;
   protected $name;
@@ -35,6 +35,8 @@ class WPsidebar implements WPaction
                         $after_title = "</h3>"
                       )
   {
+    parent::__construct('widgets_init');
+
     $this->id   = $id;
     $this->name = $name;
 
@@ -44,7 +46,7 @@ class WPsidebar implements WPaction
     $this->after_title   = $after_title;
   }
 
-  public function init()
+  public function action()
   {
       register_sidebar(array(
         'name' => $this->name,
@@ -54,15 +56,5 @@ class WPsidebar implements WPaction
         'before_title'  => $this->before_title,
         'after_title'   => $this->after_title,
         ));
-  }
-
-  public function register()
-  {
-    add_action('widgets_init', array($this, 'init'));
-  }
-
-  public function remove()
-  {
-    remove_action('widgets_init', array($this, 'init'));
   }
 }

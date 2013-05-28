@@ -17,7 +17,7 @@ namespace pweb\wp_core;
  * @subpackage  wp_core
  */
 
-class WPtaxonomy implements WPaction
+class WPtaxonomy extends WPaction
 {
   protected $slug;
   protected $type;
@@ -25,9 +25,12 @@ class WPtaxonomy implements WPaction
 
   public function __construct($slug , $type, $args = array() )
   {
+    parent::__construct('init');
+
     $this->slug = $slug;
     $this->type = $type;
 
+    //TODO setup common defaults
     $defaults = array(
 //           'label' => __( 'People' ),
 //       'rewrite' => array( 'slug' => 'person' ),
@@ -41,7 +44,7 @@ class WPtaxonomy implements WPaction
 
   }
 
-  public function init()
+  public function action()
   {
       register_taxonomy( $this->slug, $this->type, $this->args);
   }
@@ -54,14 +57,5 @@ class WPtaxonomy implements WPaction
   public function getType()
   {
     return $this->type;
-  }
-  public function register()
-  {
-    add_action('init', array($this, 'init'));
-  }
-
-  public function remove()
-  {
-    remove_action('init', array($this, 'init'));
   }
 }

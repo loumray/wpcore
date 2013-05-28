@@ -13,17 +13,15 @@
  */
 namespace pweb\wp_core;
 
-use pweb\wp_core\hooks\HookAdminScript;
-
-use pweb\wp_core\hooks\HookThemeScript;
-use pweb\wp_core\hooks\AdminThemeScript;
+use pweb\wp_core\hooks\AdminScript;
+use pweb\wp_core\hooks\ThemeScript;
 
 /**
  *
  * @package     pweb
  * @subpackage  wp_core
  */
-abstract class WPfeature
+abstract class WPfeature implements WPhook
 {
 
   static $instance;
@@ -35,16 +33,17 @@ abstract class WPfeature
   protected $scripts = array();
   protected $styles  = array();
 
-  protected $hooks  = array();
+  protected $hooks   = array();
 
-  protected $script_hooks = array();
+  protected $HThemeScript;
+  protected $HAdminScript;
 
   protected $features = array();
 
-  protected $enabled = true;
+  protected $enabled;
 
-  protected $base_path = "";
-  protected $base_url  = "";
+  protected $base_path;
+  protected $base_url;
 
   protected $asset_path = 'assets/';
   protected $css_path   = 'css/';
@@ -57,148 +56,86 @@ abstract class WPfeature
     $this->name = $name;
     $this->slug = $slug;
 
+    $this->enable();
+
     $this->base_url  = get_template_directory_uri();
     $this->base_path = get_template_directory();
 
-    $this->script_hook['theme'] = null;
-    $this->script_hook['admin'] = null;
-    $this->script_hook['login'] = null;
-
+    $this->HThemeScript = new ThemeScript();
+    $this->HadminScript = new AdminScript();
+    $this->hook($this->HThemeScript);
+    $this->hook($this->HadminScript);
   }
 
   abstract public static function getInstance();
 
-  protected function init()
-  {
-    if(is_admin())
-    {
-      $this->init_admin();
-    }
-    else
-    {
-      $this->init_theme();
-    }
-  }
-
-  protected function init_theme()
-  {
-
-  }
-
-  protected function init_admin()
-  {
-
-  }
-
   public function enable()
   {
     $this->enabled = true;
-//     add_theme_support($this->feature_slug);
+    add_theme_support($this->slug);
   }
 
   public function disable()
   {
     $this->enabled = true;
-//     remove_theme_support($this->feature_slug);
-  }
-
-  public function addFeature(WPfeature $feature)
-  {
-    $this->features[] = $feature;
-  }
-
-  public function run()
-  {
-    if(!empty($this->features))
-    {
-      foreach($this->features as $feature)
-      {
-        $feature->register();
-      }
-    }
-
-    $this->register();
+    remove_theme_support($this->slug);
   }
 
   public function register()
   {
     if($this->enabled === true)
     {
-      $this->register_hooks();
+      if(!empty($this->hooks))
+      {
+        foreach($this->hooks as $hook)
+        {
+          $hook->register();
+        }
+      }
     }
   }
 
-  public function add_script(WPscript $script)
+  public function remove()
+  {
+    if($this->enabled === true)
+    {
+      if(!empty($this->hooks))
+      {
+        foreach($this->hooks as $hook)
+        {
+          $hook->remove();
+        }
+      }
+    }
+  }
+
+  public function addScript(WPscript $script)
   {
     if($script instanceof WPscriptTheme)
     {
-      if(is_null($this->script_hook['theme']))
-      {
-        $this->script_hook['theme'] = new HookThemeScript();
-      }
-
-      $this->script_hook['theme']->add_script($script);
+      $this->HThemeScript->addScript($script);
     }
     elseif($script instanceof WPscriptAdmin)
     {
-      if(is_null($this->script_hook['admin']))
-      {
-        $this->script_hook['admin'] = new HookAdminScript();
-      }
-
-      $this->script_hook['admin']->add_script($script);
+      $this->HadminScript->addScript($script);
     }
   }
 
-  public function add_style(WPstyle $style)
+  public function addStyle(WPstyle $style)
   {
     if($style instanceof WPstyleTheme)
     {
-      if(is_null($this->script_hook['theme']))
-      {
-        $this->script_hook['theme'] = new HookThemeScript();
-      }
-
-      $this->script_hook['theme']->add_style($style);
+      $this->HThemeScript->addStyle($style);
     }
     elseif($style instanceof WPstyleAdmin)
     {
-      if(is_null($this->script_hook['admin']))
-      {
-        $this->script_hook['admin'] = new HookAdminScript();
-      }
-
-      $this->script_hook['admin']->add_style($style);
+      $this->HadminScript->addStyle($style);
     }
   }
 
-
-  public function add_hook(WPaction $hook)
+  public function hook(WPhook $hook)
   {
     $this->hooks[] = $hook;
-  }
-
-  public function register_hooks()
-  {
-    if(!empty($this->hooks))
-    {
-      foreach($this->hooks as $hook)
-      {
-        $hook->register();
-      }
-    }
-
-    //script hooks
-    foreach($this->script_hook as $script_hook)
-    {
-      if(!empty($script_hook))
-      {
-        $script_hook->register();
-      }
-    }
-
-    //TODO style hook
-
   }
 
   /**

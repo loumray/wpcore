@@ -29,7 +29,7 @@ class WPscriptTheme extends WPscript
 
   }
 
-  //This is unsafe but will do for now
+  //This might be unsafe to check
   public function is_needed()
   {
     $is_needed = $this->load_condition;

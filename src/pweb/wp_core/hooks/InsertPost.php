@@ -11,6 +11,7 @@
  */
 namespace pweb\wp_core\hooks;
 
+use pweb\wp_core\WPaction;
 
 /**
  *
@@ -18,21 +19,16 @@ namespace pweb\wp_core\hooks;
  * @subpackage  wp_core
  */
 
-class HookThemeScript extends WPhook
+class InsertPost extends WPaction
 {
-
-  protected $scripts = array();
-  protected $styles  = array();
 
   public function __construct()
   {
-    $this->hook_type = 'action';
-    $this->tag       = 'wp_insert_post';
-    $this->priority  = 100;
-    $this->accepted_args = 1;
+    parent::__construct('wp_insert_post',100,1);
   }
 
-  public function hook_action()
+  //In dev todo
+  public function action()
   {
     return null;
   }
