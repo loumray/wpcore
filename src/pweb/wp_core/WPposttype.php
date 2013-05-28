@@ -17,15 +17,17 @@ namespace pweb\wp_core;
  * @subpackage  wp_core
  */
 
-class WPposttype implements WPaction
+class WPposttype extends WPaction
 {
   protected $slug;
   protected $args;
 
   public function __construct($slug , $args = array() )
   {
+    parent::__construct('init');
     $this->slug = $slug;
 
+    //TODO add common defaults
     $defaults = array(
 //           'label' => 'Slides',
 //           'singular_label' => 'Slide',
@@ -41,22 +43,14 @@ class WPposttype implements WPaction
 
   }
 
-  public function init()
-  {
-      register_post_type( $this->slug , $this->args );
-  }
-
   public function getSlug()
   {
     return $this->slug;
   }
-  public function register()
+
+  public function action()
   {
-    add_action('init', array($this, 'init'));
+      register_post_type( $this->slug , $this->args );
   }
 
-  public function remove()
-  {
-    remove_action('init', array($this, 'init'));
-  }
 }
