@@ -1,6 +1,6 @@
 {
   "name": "loumray/wpcore",
-  "description": "WP core for plugin and theme developpement using composer and full OO approach",
+  "description": "Object Oriented core to simplify plugins and themes development for wordpress",
   "keywords": ["wordpress", "plugins", "theme"],
   "homepage": "https://github.com/loumray/wpcore",
   "type": "library",
