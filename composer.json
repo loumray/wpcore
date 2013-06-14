@@ -1,13 +1,20 @@
 {
-  "name": "pweb/wp_core",
-  "version": "1.0.0",
-  "minimum-stability": "dev",
+  "name": "loumray/wpcore",
+  "description": "WP core for plugin and theme developpement using composer and full OO approach",
+  "keywords": ["wordpress", "plugins", "theme"],
+  "homepage": "https://github.com/loumray/wpcore",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+        {
+            "name": "Louis-Michel Raynauld",
+            "email": "louismichel@pweb.ca",
+        }
+    ],
   "require": {
     "php":          ">=5.3.0"
   },
   "autoload": {
-        "psr-0": {
-            "pweb\\wp_core": "src/"
-        }
-    }
+        "psr-0": { "WPcore": "src/" }
+   }
 }
