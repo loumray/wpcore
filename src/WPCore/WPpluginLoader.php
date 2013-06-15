@@ -11,6 +11,7 @@
 namespace WPCore;
 
 use Composer\Autoload\ClassLoader;
+use Composer\Script\Event;
 
 /**
  * WP plugin loader
@@ -26,6 +27,70 @@ class WPpluginLoader extends ClassLoader
   protected $useIncludePath = false;
   protected $classMap = array();
 
+  public static function wrapVendor(Event $event)
+  {
+
+    $composer = $event->getComposer();
+    $vendorDir = __DIR__.'/../../../../';
+    $rootPackage = $composer->getPackage();
+    $installedPackage = $event->getOperation()->getPackage();
+
+    $extra = $rootPackage->getExtra();
+
+    if(isset($extra['plugin-namespace']))
+    {
+
+      $namespaces = require __DIR__.'/../../../../composer/autoload_namespaces.php';
+      $newRootNamespace = $extra['plugin-namespace'];
+
+      echo "----- wrapping package ".$installedPackage->getPrettyName()." into namespace $newRootNamespace -------". PHP_EOL;
+      $supplierstochange = array();
+      foreach($namespaces as $namespace => $path)
+      {
+        $supplier = stristr($namespace, '\\', true);
+        if(empty($supplier))
+        {
+          $supplier = $namespace;
+        }
+        if(!isset($supplierstochange[$supplier]))
+        {
+          $supplierstochange[$supplier] = $newRootNamespace.'\\'.$supplier;
+        }
+      }
+
+      $dir = $vendorDir.'/'.$installedPackage->getPrettyName();
+      $path = realpath($dir); // Path to your textfiles
+      $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
+      foreach ($fileList as $item)
+      {
+        if ($item->isFile() && stripos($item->getExtension(), 'php') !== false)
+        {
+          $file_contents = file_get_contents($item->getPathName());
+          if(is_writable($item->getPathName()) === false)
+          {
+            echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
+            continue;
+          }
+
+          foreach($supplierstochange as $supplier => $new)
+          {
+            $file_contents = str_replace(" $supplier\\"," $new\\",$file_contents);
+            $file_contents = str_replace(" $supplier;"," $new;",$file_contents);
+          }
+
+          file_put_contents($item->getPathName(),$file_contents);
+        }
+      }
+    }
+
+  }
+
+  public static function unwrapVendor(Event $event)
+  {
+    echo "unwrapVendor";
+    print_r($event);
+    exit;
+  }
   /**
      * Finds the path to the file where the class is defined.
      *
