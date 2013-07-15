@@ -22,10 +22,7 @@ use WPCore\hooks\ThemeScript;
 abstract class WPfeature implements WPhook
 {
 
-  static $instance;
-
-  public $name;
-
+  protected $name;
   protected $slug = 'pweb';
 
   private $base_path;
@@ -65,8 +62,14 @@ abstract class WPfeature implements WPhook
     $this->hook($this->HadminScript);
   }
 
-  abstract public static function getInstance();
-
+  public function getSlug()
+  {
+    return $this->slug;
+  }
+  public function getName()
+  {
+    return $this->name;
+  }
   public function enable()
   {
     $this->enabled = true;
