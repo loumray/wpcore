@@ -65,16 +65,19 @@ class WPpluginLoader extends ClassLoader
       {
         if ($item->isFile() && stripos($item->getExtension(), 'php') !== false)
         {
-          $file_contents = file_get_contents($item->getPathName());
           if(is_writable($item->getPathName()) === false)
           {
             echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
             continue;
           }
 
+          $file_contents = file_get_contents($item->getPathName());
+
           foreach($supplierstochange as $supplier => $new)
           {
             $file_contents = str_replace(" $supplier\\"," $new\\",$file_contents);
+            $file_contents = str_replace("\"$supplier\\"," $new\\",$file_contents);
+            $file_contents = str_replace("'$supplier\\"," $new\\",$file_contents);
             $file_contents = str_replace(" $supplier;"," $new;",$file_contents);
           }
 
@@ -87,8 +90,46 @@ class WPpluginLoader extends ClassLoader
 
   public static function unwrapVendor(Event $event)
   {
-    echo "unwrapVendor";
+    //TODO
+    echo "unwrapVendor".PHP_EOL;
     print_r($event);
+    exit;
+  }
+
+  public static function unwrapPackage($package, $namespacesToUnwrap = array())
+  {
+    echo "unwrappingPackage $package".PHP_EOL;
+    $vendorDir = __DIR__.'/../../../../';
+
+    $dir = $vendorDir.'/'.$package;
+    $path = realpath($dir); // Path to your textfiles
+
+    $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
+    foreach ($fileList as $item)
+    {
+      if ($item->isFile() && stripos($item->getExtension(), 'php') !== false)
+      {
+        if(is_writable($item->getPathName()) === false)
+        {
+          echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
+          continue;
+        }
+
+        echo "unwrapping file: ".$item->getFilename(). PHP_EOL;
+        $file_contents = file_get_contents($item->getPathName());
+
+        foreach($namespacesToUnwrap as $unwrapNamespace)
+        {
+          $file_contents = str_replace(" $unwrapNamespace\\"," ",$file_contents);
+          $file_contents = str_replace("\"$unwrapNamespace\\","",$file_contents);
+          $file_contents = str_replace("'$unwrapNamespace\\","",$file_contents);
+        }
+
+        file_put_contents($item->getPathName(),$file_contents);
+      }
+
+    }
+
     exit;
   }
   /**
