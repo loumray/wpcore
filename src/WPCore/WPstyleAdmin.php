@@ -42,8 +42,10 @@ class WPstyleAdmin extends WPstyle
     return in_array($page, $this->admin_page);
   }
 
-  public function enqueue($page)
+  public function enqueue()
   {
+    $page = func_get_arg(0);
+
     if($this->is_needed($page))
     {
       parent::enqueue();
