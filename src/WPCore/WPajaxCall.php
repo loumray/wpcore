@@ -23,6 +23,8 @@ abstract class WPajaxCall implements WPhook
   protected $mustBeLoggedIn;
   protected $jsvar;
 
+  protected $currentUser;
+
   public function __construct($call_slug, $js_handle, $admin = false, $mustBeLoggedIn = false)
   {
     $this->slug      = $call_slug;
@@ -44,6 +46,26 @@ abstract class WPajaxCall implements WPhook
 
   abstract public function init();
   abstract public function callback();
+
+  /*
+   * If logged in needed  sets current user or die if no user are logged
+   */
+  protected function verify()
+  {
+    if($this->mustBeLoggedIn === true)
+    {
+      $this->setCurrentUser();
+      if ( 0 == $this->currentUser->ID ) {
+        //user not logged in
+        die();
+      }
+    }
+  }
+
+  protected function setCurrentUser()
+  {
+      $this->currentUser = wp_get_current_user();
+  }
 
   /*
    *
