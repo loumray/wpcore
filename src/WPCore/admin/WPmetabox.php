@@ -41,7 +41,7 @@ class WPmetabox extends WPaction
                               $callback_args = null)
   {
 
-    parent::__construct('add_meta_boxes');
+    parent::__construct('add_meta_boxes',10,2);
 
     $this->view  = $view;
     $this->id    = $id;
@@ -67,6 +67,7 @@ class WPmetabox extends WPaction
 
   public function action()
   {
+
     add_meta_box( $this->id,
                   $this->title,
                   array( $this, 'view' ),

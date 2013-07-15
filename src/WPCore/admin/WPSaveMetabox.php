@@ -21,7 +21,7 @@ use WPCore\WPaction;
 
 class WPSaveMetabox extends WPaction
 {
-  protected $metabox;
+  protected $metabox = null;
 
   public function __construct()
   {
@@ -38,7 +38,7 @@ class WPSaveMetabox extends WPaction
     $post_id = func_get_arg(0);
     $post    = func_get_arg(1);
 
-    if(!$this->metabox->verify())
+    if(!($this->metabox instanceof WPmetabox) || !$this->metabox->verify())
     {
       return false;
     }
