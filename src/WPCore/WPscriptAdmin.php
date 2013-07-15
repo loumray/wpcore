@@ -36,11 +36,33 @@ class WPscriptAdmin extends WPscript
   {
     if(empty($this->admin_page)) return true;
 
-    return in_array($page, $this->admin_page);
+
+    if(in_array($page, $this->admin_page))
+    {
+      return true;
+    }
+    elseif(isset($this->admin_page[$page]))
+    {
+      if(empty($this->admin_page[$page]))
+      {
+        return true;
+      }
+      elseif(isset($this->admin_page[$page]['post_type']))
+      {
+
+        global $post;
+        if($post->post_type === $this->admin_page[$page]['post_type'])
+        {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
-  public function enqueue($page)
+  public function enqueue()
   {
+    $page = func_get_arg(0);
     if($this->is_needed($page))
     {
       parent::enqueue();
