@@ -27,73 +27,54 @@ class WPpluginLoader extends ClassLoader
   protected $useIncludePath = false;
   protected $classMap = array();
 
-  public static function wrapVendor(Event $event)
+  public static function wrapPackage($installedPackage, $namespacesWrapper)
   {
-
-    $composer = $event->getComposer();
     $vendorDir = __DIR__.'/../../../../';
-    $rootPackage = $composer->getPackage();
-    $installedPackage = $event->getOperation()->getPackage();
 
-    $extra = $rootPackage->getExtra();
+    $namespaces = require __DIR__.'/../../../../composer/autoload_namespaces.php';
+    $newRootNamespace = $namespacesWrapper;
 
-    if(isset($extra['plugin-namespace']))
+    echo "----- wrapping package ".$installedPackage." into namespace $newRootNamespace -------". PHP_EOL;
+    $supplierstochange = array();
+    foreach($namespaces as $namespace => $path)
     {
-
-      $namespaces = require __DIR__.'/../../../../composer/autoload_namespaces.php';
-      $newRootNamespace = $extra['plugin-namespace'];
-
-      echo "----- wrapping package ".$installedPackage->getPrettyName()." into namespace $newRootNamespace -------". PHP_EOL;
-      $supplierstochange = array();
-      foreach($namespaces as $namespace => $path)
+      $supplier = stristr($namespace, '\\', true);
+      if(empty($supplier))
       {
-        $supplier = stristr($namespace, '\\', true);
-        if(empty($supplier))
-        {
-          $supplier = $namespace;
-        }
-        if(!isset($supplierstochange[$supplier]))
-        {
-          $supplierstochange[$supplier] = $newRootNamespace.'\\'.$supplier;
-        }
+        $supplier = $namespace;
       }
-
-      $dir = $vendorDir.'/'.$installedPackage->getPrettyName();
-      $path = realpath($dir); // Path to your textfiles
-      $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
-      foreach ($fileList as $item)
+      if(!isset($supplierstochange[$supplier]))
       {
-        if ($item->isFile() && stripos($item->getExtension(), 'php') !== false)
-        {
-          if(is_writable($item->getPathName()) === false)
-          {
-            echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
-            continue;
-          }
-
-          $file_contents = file_get_contents($item->getPathName());
-
-          foreach($supplierstochange as $supplier => $new)
-          {
-            $file_contents = str_replace(" $supplier\\"," $new\\",$file_contents);
-            $file_contents = str_replace("\"$supplier\\"," $new\\",$file_contents);
-            $file_contents = str_replace("'$supplier\\"," $new\\",$file_contents);
-            $file_contents = str_replace(" $supplier;"," $new;",$file_contents);
-          }
-
-          file_put_contents($item->getPathName(),$file_contents);
-        }
+        $supplierstochange[$supplier] = $newRootNamespace.'\\'.$supplier;
       }
     }
 
-  }
+    $dir = $vendorDir.'/'.$installedPackage;
+    $path = realpath($dir); // Path to your textfiles
+    $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
+    foreach ($fileList as $item)
+    {
+      if ($item->isFile() && stripos($item->getExtension(), 'php') !== false)
+      {
+        if(is_writable($item->getPathName()) === false)
+        {
+          echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
+          continue;
+        }
 
-  public static function unwrapVendor(Event $event)
-  {
-    //TODO
-    echo "unwrapVendor".PHP_EOL;
-    print_r($event);
-    exit;
+        $file_contents = file_get_contents($item->getPathName());
+
+        foreach($supplierstochange as $supplier => $new)
+        {
+          $file_contents = str_replace(" $supplier\\"," $new\\",$file_contents);
+          $file_contents = str_replace("\"$supplier\\","\"$new\\",$file_contents);
+          $file_contents = str_replace("'$supplier\\","'$new\\",$file_contents);
+          $file_contents = str_replace(" $supplier;"," $new;",$file_contents);
+        }
+
+        file_put_contents($item->getPathName(),$file_contents);
+      }
+    }
   }
 
   public static function unwrapPackage($package, $namespacesToUnwrap = array())
@@ -121,16 +102,14 @@ class WPpluginLoader extends ClassLoader
         foreach($namespacesToUnwrap as $unwrapNamespace)
         {
           $file_contents = str_replace(" $unwrapNamespace\\"," ",$file_contents);
-          $file_contents = str_replace("\"$unwrapNamespace\\","",$file_contents);
-          $file_contents = str_replace("'$unwrapNamespace\\","",$file_contents);
+          $file_contents = str_replace("\"$unwrapNamespace\\","\"",$file_contents);
+          $file_contents = str_replace("'$unwrapNamespace\\","'",$file_contents);
         }
 
         file_put_contents($item->getPathName(),$file_contents);
       }
 
     }
-
-    exit;
   }
   /**
      * Finds the path to the file where the class is defined.
