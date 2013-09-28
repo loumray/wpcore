@@ -20,17 +20,17 @@ namespace WPCore;
 
 class WPwidgetLoader extends WPaction
 {
-  protected $class;
+    protected $class;
 
-	public function __construct($class)
-	{
-	  parent::__construct('widgets_init');
+    public function __construct($class)
+    {
+        parent::__construct('widgets_init');
 
-	  $this->class = $class;
-	}
+        $this->class = $class;
+    }
 
-	public function action()
-	{
-	  register_widget($this->class);
-	}
+    public function action()
+    {
+        register_widget($this->class);
+    }
 }

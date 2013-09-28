@@ -17,6 +17,6 @@ namespace WPCore;
  */
 interface WPhook
 {
-  public function register();
-  public function remove();
+    public function register();
+    public function remove();
 }

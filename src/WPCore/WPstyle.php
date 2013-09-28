@@ -17,31 +17,29 @@ namespace WPCore;
  */
 class WPstyle
 {
-  protected $handle;
-  protected $src       = "";
-  protected $deps      = array();
-  protected $ver       = false;
-  protected $media     = 'all';
+    protected $handle;
+    protected $src       = "";
+    protected $deps      = array();
+    protected $ver       = false;
+    protected $media     = 'all';
 
-  public function __construct($handle, $src = "", $deps = array(),$ver = false, $media = 'all')
-  {
-    $this->handle    = $handle;
-    $this->src       = $src;
-    $this->deps      = $deps;
-    $this->ver       = $ver;
-    $this->media     = $media;
-  }
+    public function __construct($handle, $src = "", $deps = array(), $ver = false, $media = 'all')
+    {
+        $this->handle = $handle;
+        $this->src    = $src;
+        $this->deps   = $deps;
+        $this->ver    = $ver;
+        $this->media  = $media;
+    }
 
-
-  public function enqueue()
-  {
-    wp_enqueue_style(
-                    $this->handle,
-                    $this->src,
-                    $this->deps,
-                    $this->ver,
-                    $this->media
-                    );
-  }
-
+    public function enqueue()
+    {
+        wp_enqueue_style(
+            $this->handle,
+            $this->src,
+            $this->deps,
+            $this->ver,
+            $this->media
+        );
+    }
 }

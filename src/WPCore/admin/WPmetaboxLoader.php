@@ -21,22 +21,22 @@ use WPCore\WPaction;
 
 class WPmetaboxLoader extends WPaction
 {
-  protected $metabox;
-  protected $saveaction;
+    protected $metabox;
+    protected $saveaction;
 
-  public function __construct(WPmetabox $metabox,
-                              WPSaveMetabox $saveaction)
-  {
-    parent::__construct(array('load-post.php','load-post-new.php'));
-    $this->saveaction  = $saveaction;
-    $this->metabox     = $metabox;
+    public function __construct(
+        WPmetabox $metabox,
+        WPSaveMetabox $saveaction
+    ) {
+        parent::__construct(array('load-post.php', 'load-post-new.php'));
+        $this->saveaction = $saveaction;
+        $this->metabox    = $metabox;
+    }
 
-  }
-
-  public function action()
-  {
-    $this->metabox->register();
-    $this->saveaction->setMetabox($this->metabox);
-    $this->saveaction->register();
-  }
+    public function action()
+    {
+        $this->metabox->register();
+        $this->saveaction->setMetabox($this->metabox);
+        $this->saveaction->register();
+    }
 }

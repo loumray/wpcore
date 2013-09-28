@@ -43,21 +43,17 @@ class AdminScript extends WPaction
 
   public function action()
   {
-    if(!empty($this->scripts))
-    {
+    if (!empty($this->scripts)) {
       $hook = func_get_arg(0);
-      foreach($this->scripts as $script)
-      {
+      foreach ($this->scripts as $script) {
         //todo support page specific script
           $script->enqueue($hook);
       }
     }
 
-    if(!empty($this->styles))
-    {
+    if (!empty($this->styles)) {
       $hook = func_get_arg(0);
-      foreach($this->styles as $script)
-      {
+      foreach ($this->styles as $script) {
         //todo support page specific script
           $script->enqueue($hook);
       }

@@ -17,32 +17,29 @@ namespace WPCore;
  */
 class WPtheme
 {
-  protected $req_php_version  = '5.3.0';
-  protected $req_wp_version   = '3.0.0';
+    protected $req_php_version  = '5.3.0';
+    protected $req_wp_version   = '3.0.0';
 
-  protected $theme_name;
+    protected $theme_name;
 
-  protected $features = array();
+    protected $features = array();
 
-  public function __construct($name)
-  {
-    $this->theme_name = $name;
-  }
-
-  public function addFeature(WPfeature $feature)
-  {
-    $this->features[] = $feature;
-  }
-
-  public function run()
-  {
-    if(!empty($this->features))
+    public function __construct($name)
     {
-      foreach($this->features as $feature)
-      {
-        $feature->register();
-      }
+        $this->theme_name = $name;
     }
-  }
 
+    public function addFeature(WPfeature $feature)
+    {
+        $this->features[] = $feature;
+    }
+
+    public function run()
+    {
+        if (!empty($this->features)) {
+            foreach ($this->features as $feature) {
+                $feature->register();
+            }
+        }
+    }
 }

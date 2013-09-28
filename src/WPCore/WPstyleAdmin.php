@@ -17,38 +17,35 @@ namespace WPCore;
  */
 class WPstyleAdmin extends WPstyle
 {
-  protected $admin_page = array();
+    protected $admin_page = array();
 
-
-  public function __construct($admin_page, $handle, $src = "", $deps = array(),$ver = false, $media = 'all')
-  {
-    parent::__construct($handle, $src, $deps, $ver, $media);
-
-    if(!is_array($admin_page))
+    public function __construct($admin_page, $handle, $src = "", $deps = array(), $ver = false, $media = 'all')
     {
-      $this->admin_page[] = $admin_page;
-    }
-    else
-    {
-      $this->admin_page = $admin_page;
+        parent::__construct($handle, $src, $deps, $ver, $media);
+
+        if (!is_array($admin_page)) {
+            $this->admin_page[] = $admin_page;
+        } else {
+            $this->admin_page = $admin_page;
+        }
+
     }
 
-  }
-
-  public function is_needed($page)
-  {
-    if(empty($this->admin_page)) return true;
-
-    return in_array($page, $this->admin_page);
-  }
-
-  public function enqueue()
-  {
-    $page = func_get_arg(0);
-
-    if($this->is_needed($page))
+    public function isNeeded($page)
     {
-      parent::enqueue();
+        if (empty($this->admin_page)) {
+            return true;
+        }
+
+        return in_array($page, $this->admin_page);
     }
-  }
+
+    public function enqueue()
+    {
+        $page = func_get_arg(0);
+
+        if ($this->isNeeded($page)) {
+            parent::enqueue();
+        }
+    }
 }

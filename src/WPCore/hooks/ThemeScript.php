@@ -20,7 +20,7 @@ use WPCore\WPstyle;
  * @author Louis-Michel Raynauld <louismichel@pweb.ca>
  */
 
-class themeScript extends WPaction
+class ThemeScript extends WPaction
 {
 
   protected $scripts = array();
@@ -43,21 +43,18 @@ class themeScript extends WPaction
 
   public function action()
   {
-    if(!empty($this->scripts))
-    {
-      foreach($this->scripts as $script)
-      {
+    if (!empty($this->scripts)) {
+      foreach ($this->scripts as $script) {
           $script->enqueue();
       }
     }
 
-    if(!empty($this->styles))
-    {
-      foreach($this->styles as $script)
-      {
+    if (!empty($this->styles)) {
+      foreach ($this->styles as $script) {
         $script->enqueue();
       }
     }
+
     return null;
   }
 }

@@ -22,191 +22,181 @@ use WPCore\hooks\ThemeScript;
 abstract class WPfeature implements WPhook
 {
 
-  protected $name;
-  protected $slug = 'pweb';
+    protected $name;
+    protected $slug = 'pweb';
 
-  private $base_path;
-  private $base_url;
+    private $base_path;
+    private $base_url;
 
-  private $asset_path = 'assets/';
-  private $css_path   = 'css/';
-  private $js_path    = 'js/';
+    private $asset_path = 'assets/';
+    private $css_path   = 'css/';
+    private $js_path    = 'js/';
 
-  private $views_path = 'views/';
+    private $views_path = 'views/';
 
-  protected $scripts = array();
-  protected $styles  = array();
+    protected $scripts = array();
+    protected $styles  = array();
 
-  protected $hooks   = array();
+    protected $hooks   = array();
 
-  protected $HThemeScript;
-  protected $HAdminScript;
+    protected $HThemeScript;
+    protected $HAdminScript;
 
-  protected $features = array();
+    protected $features = array();
 
-  protected $enabled;
+    protected $enabled;
 
-  public function __construct($name, $slug)
-  {
-    $this->name = $name;
-    $this->slug = $slug;
-
-    $this->enable();
-
-    $this->setBaseUrl(get_template_directory_uri());
-    $this->setBasePath(get_template_directory());
-
-    $this->HThemeScript = new ThemeScript();
-    $this->HadminScript = new AdminScript();
-    $this->hook($this->HThemeScript);
-    $this->hook($this->HadminScript);
-  }
-
-  public function getSlug()
-  {
-    return $this->slug;
-  }
-  public function getName()
-  {
-    return $this->name;
-  }
-  public function enable()
-  {
-    $this->enabled = true;
-    add_theme_support($this->slug);
-  }
-
-  public function disable()
-  {
-    $this->enabled = true;
-    remove_theme_support($this->slug);
-  }
-
-  public function register()
-  {
-    if($this->enabled === true)
+    public function __construct($name, $slug)
     {
-      if(!empty($this->hooks))
-      {
-        foreach($this->hooks as $hook)
-        {
-          $hook->register();
+        $this->name = $name;
+        $this->slug = $slug;
+
+        $this->enable();
+
+        $this->setBaseUrl(get_template_directory_uri());
+        $this->setBasePath(get_template_directory());
+
+        $this->HThemeScript = new ThemeScript();
+        $this->HadminScript = new AdminScript();
+        $this->hook($this->HThemeScript);
+        $this->hook($this->HadminScript);
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+    public function getName()
+    {
+        return $this->name;
+    }
+    public function enable()
+    {
+        $this->enabled = true;
+        add_theme_support($this->slug);
+    }
+
+    public function disable()
+    {
+        $this->enabled = true;
+        remove_theme_support($this->slug);
+    }
+
+    public function register()
+    {
+        if ($this->enabled === true) {
+            if (!empty($this->hooks)) {
+                foreach ($this->hooks as $hook) {
+                    $hook->register();
+                }
+            }
         }
-      }
     }
-  }
 
-  public function remove()
-  {
-    if($this->enabled === true)
+    public function remove()
     {
-      if(!empty($this->hooks))
-      {
-        foreach($this->hooks as $hook)
-        {
-          $hook->remove();
+        if ($this->enabled === true) {
+            if (!empty($this->hooks)) {
+                foreach ($this->hooks as $hook) {
+                    $hook->remove();
+                }
+            }
         }
-      }
     }
-  }
 
-  public function addScript(WPscript $script)
-  {
-    if($script instanceof WPscriptTheme)
+    public function addScript(WPscript $script)
     {
-      $this->HThemeScript->addScript($script);
+        if ($script instanceof WPscriptTheme) {
+            $this->HThemeScript->addScript($script);
+        } elseif ($script instanceof WPscriptAdmin) {
+            $this->HadminScript->addScript($script);
+        }
     }
-    elseif($script instanceof WPscriptAdmin)
+
+    public function addStyle(WPstyle $style)
     {
-      $this->HadminScript->addScript($script);
+        if ($style instanceof WPstyleTheme) {
+            $this->HThemeScript->addStyle($style);
+        } elseif ($style instanceof WPstyleAdmin) {
+            $this->HadminScript->addStyle($style);
+        }
     }
-  }
 
-  public function addStyle(WPstyle $style)
-  {
-    if($style instanceof WPstyleTheme)
+    public function hook(WPhook $hook)
     {
-      $this->HThemeScript->addStyle($style);
+        $this->hooks[] = $hook;
     }
-    elseif($style instanceof WPstyleAdmin)
+
+    public function setBasePath($basePath)
     {
-      $this->HadminScript->addStyle($style);
+        $this->base_path = rtrim($basePath, '/');
     }
-  }
 
-  public function hook(WPhook $hook)
-  {
-    $this->hooks[] = $hook;
-  }
+    public function setBaseUrl($baseUrl)
+    {
+        $this->base_url = rtrim($baseUrl, '/');
+    }
+    /**
+     * Get the theme path
+     */
+    public function getBasePath()
+    {
+        if (!empty($this->base_path)) {
+            return $this->base_path;
+        }
+        return $this->base_path = get_template_directory();
+    }
+    /**
+     * Get the theme assets path
+     */
+    public function getAssetsPath()
+    {
+        return $this->getBasePath().'/'.$this->asset_path;
+    }
 
-  public function setBasePath($basePath)
-  {
+    /**
+     * Get the theme path
+     */
+    public function getViewsPath()
+    {
+        return $this->getBasePath().'/'.$this->views_path;
+    }
+    /**
+     * Get the theme path
+     */
+    public function getBaseUrl()
+    {
+        if (!empty($this->base_url)) {
+            return $this->base_url;
+        }
+        return $this->base_url = get_template_directory_uri();
+    }
+    /**
+     * Get the theme assets url
+     */
+    public function getAssetsUrl()
+    {
+        return $this->getBaseUrl().'/'.$this->asset_path;
+    }
 
-    $this->base_path = rtrim($basePath, '/');
-  }
-
-  public function setBaseUrl($baseUrl)
-  {
-    $this->base_url = rtrim($baseUrl, '/');
-  }
-  /**
-   * Get the theme path
-   */
-  public function getBasePath()
-  {
-    if ( !empty($this->base_path) ) return $this->base_path;
-
-    return $this->base_path = get_template_directory();
-  }
-  /**
-   * Get the theme assets path
-   */
-  public function getAssetsPath()
-  {
-    return $this->getBasePath().'/'.$this->asset_path;
-  }
-
-  /**
-   * Get the theme path
-   */
-  public function getViewsPath()
-  {
-    return $this->getBasePath().'/'.$this->views_path;
-  }
-  /**
-   * Get the theme path
-   */
-  public function getBaseUrl()
-  {
-    if ( !empty($this->base_url) ) return $this->base_url;
-
-    return $this->base_url = get_template_directory_uri();
-  }
-  /**
-   * Get the theme assets url
-   */
-  public function getAssetsUrl()
-  {
-    return $this->getBaseUrl().'/'.$this->asset_path;
-  }
-
-  /**
-   * Get the theme css url
-   */
-  public function getCssUrl()
-  {
-    if ( !empty($this->css_url) ) return $this->css_url;
-
-    return $this->css_url = $this->getBaseUrl().'/'.$this->asset_path.$this->css_path;
-  }
-  /**
-   * Get the theme js url
-   */
-  public function getJsUrl()
-  {
-    if ( !empty($this->js_url) ) return $this->js_url;
-
-    return $this->js_url = $this->getBaseUrl().'/'.$this->asset_path.$this->js_path;
-  }
-
+    /**
+     * Get the theme css url
+     */
+    public function getCssUrl()
+    {
+        if (!empty($this->css_url)) {
+            return $this->css_url;
+        }
+        return $this->css_url = $this->getBaseUrl().'/'.$this->asset_path.$this->css_path;
+    }
+    /**
+     * Get the theme js url
+     */
+    public function getJsUrl()
+    {
+        if (!empty($this->js_url)) {
+            return $this->js_url;
+        }
+        return $this->js_url = $this->getBaseUrl().'/'.$this->asset_path.$this->js_path;
+    }
 }

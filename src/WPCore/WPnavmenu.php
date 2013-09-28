@@ -17,19 +17,19 @@ namespace WPCore;
  */
 class WPnavmenu extends WPaction
 {
-  protected $location;
-  protected $description;
+    protected $location;
+    protected $description;
 
-  public function __construct($location, $description)
-  {
-    parent::__construct('init');
+    public function __construct($location, $description)
+    {
+        parent::__construct('init');
 
-    $this->location    = $location;
-    $this->description = $description;
-  }
+        $this->location    = $location;
+        $this->description = $description;
+    }
 
-  public function action()
-  {
-    register_nav_menu($this->location, $this->description);
-  }
+    public function action()
+    {
+        register_nav_menu($this->location, $this->description);
+    }
 }

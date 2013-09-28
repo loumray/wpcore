@@ -18,27 +18,26 @@ namespace WPCore;
 
 class WPposttype extends WPaction
 {
-  protected $slug;
-  protected $args;
+    protected $slug;
+    protected $args;
 
-  public function __construct($slug , $args = array() )
-  {
-    parent::__construct('init');
-    $this->slug = $slug;
+    public function __construct($slug, $args = array())
+    {
+        parent::__construct('init');
+        $this->slug = $slug;
 
-    $defaults = array();
-    $this->args = wp_parse_args($args, $defaults);
+        $defaults = array();
+        $this->args = wp_parse_args($args, $defaults);
 
-  }
+    }
 
-  public function getSlug()
-  {
-    return $this->slug;
-  }
+    public function getSlug()
+    {
+        return $this->slug;
+    }
 
-  public function action()
-  {
-      register_post_type( $this->slug , $this->args );
-  }
-
+    public function action()
+    {
+        register_post_type($this->slug, $this->args);
+    }
 }

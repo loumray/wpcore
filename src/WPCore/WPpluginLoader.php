@@ -11,7 +11,6 @@
 namespace WPCore;
 
 use Composer\Autoload\ClassLoader;
-use Composer\Script\Event;
 
 /**
  * WP plugin loader
@@ -22,96 +21,85 @@ use Composer\Script\Event;
 class WPpluginLoader extends ClassLoader
 {
 
-  protected $prefixes = array();
-  protected $fallbackDirs = array();
-  protected $useIncludePath = false;
-  protected $classMap = array();
+    protected $prefixes = array();
+    protected $fallbackDirs = array();
+    protected $useIncludePath = false;
+    protected $classMap = array();
 
-  public static function wrapPackage($installedPackage, $namespacesWrapper)
-  {
-    $vendorDir = __DIR__.'/../../../../';
-
-    $namespaces = require __DIR__.'/../../../../composer/autoload_namespaces.php';
-    $newRootNamespace = $namespacesWrapper;
-
-    echo "----- wrapping package ".$installedPackage." into namespace $newRootNamespace -------". PHP_EOL;
-    $supplierstochange = array();
-    foreach($namespaces as $namespace => $path)
+    public static function wrapPackage($installedPackage, $namespacesWrapper)
     {
-      $supplier = stristr($namespace, '\\', true);
-      if(empty($supplier))
-      {
-        $supplier = $namespace;
-      }
-      if(!isset($supplierstochange[$supplier]))
-      {
-        $supplierstochange[$supplier] = $newRootNamespace.'\\'.$supplier;
-      }
+        $vendorDir = __DIR__.'/../../../../';
+
+        $namespaces = require __DIR__.'/../../../../composer/autoload_namespaces.php';
+        $newRootNamespace = $namespacesWrapper;
+
+        echo "----- wrapping package ".$installedPackage." into namespace $newRootNamespace -------". PHP_EOL;
+        $supplierstochange = array();
+        foreach ($namespaces as $namespace => $path) {
+            $supplier = stristr($namespace, '\\', true);
+            if (empty($supplier)) {
+                $supplier = $namespace;
+            }
+            if (!isset($supplierstochange[$supplier])) {
+                $supplierstochange[$supplier] = $newRootNamespace.'\\'.$supplier;
+            }
+        }
+
+        $dir = $vendorDir.'/'.$installedPackage;
+        $path = realpath($dir); // Path to your textfiles
+        $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($fileList as $item) {
+            if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
+                if (is_writable($item->getPathName()) === false) {
+                    echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
+                    continue;
+                }
+
+                $file_contents = file_get_contents($item->getPathName());
+
+                foreach ($supplierstochange as $supplier => $new) {
+                    $file_contents = str_replace(" $supplier\\", " $new\\", $file_contents);
+                    $file_contents = str_replace("\"$supplier\\", "\"$new\\", $file_contents);
+                    $file_contents = str_replace("'$supplier\\", "'$new\\", $file_contents);
+                    $file_contents = str_replace(" $supplier;", " $new;", $file_contents);
+                }
+
+                file_put_contents($item->getPathName(), $file_contents);
+            }
+        }
     }
 
-    $dir = $vendorDir.'/'.$installedPackage;
-    $path = realpath($dir); // Path to your textfiles
-    $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
-    foreach ($fileList as $item)
+    public static function unwrapPackage($package, $namespacesToUnwrap = array())
     {
-      if ($item->isFile() && stripos($item->getExtension(), 'php') !== false)
-      {
-        if(is_writable($item->getPathName()) === false)
-        {
-          echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
-          continue;
+        echo "unwrappingPackage $package".PHP_EOL;
+        $vendorDir = __DIR__.'/../../../../';
+
+        $dir = $vendorDir.'/'.$package;
+        $path = realpath($dir); // Path to your textfiles
+
+        $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($fileList as $item) {
+            if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
+                if (is_writable($item->getPathName()) === false) {
+                    echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
+                    continue;
+                }
+
+                echo "unwrapping file: ".$item->getFilename(). PHP_EOL;
+                $file_contents = file_get_contents($item->getPathName());
+
+                foreach ($namespacesToUnwrap as $unwrapNamespace) {
+                    $file_contents = str_replace(" $unwrapNamespace\\", " ", $file_contents);
+                    $file_contents = str_replace("\"$unwrapNamespace\\", "\"", $file_contents);
+                    $file_contents = str_replace("'$unwrapNamespace\\", "'", $file_contents);
+                }
+
+                file_put_contents($item->getPathName(), $file_contents);
+            }
+
         }
-
-        $file_contents = file_get_contents($item->getPathName());
-
-        foreach($supplierstochange as $supplier => $new)
-        {
-          $file_contents = str_replace(" $supplier\\"," $new\\",$file_contents);
-          $file_contents = str_replace("\"$supplier\\","\"$new\\",$file_contents);
-          $file_contents = str_replace("'$supplier\\","'$new\\",$file_contents);
-          $file_contents = str_replace(" $supplier;"," $new;",$file_contents);
-        }
-
-        file_put_contents($item->getPathName(),$file_contents);
-      }
     }
-  }
-
-  public static function unwrapPackage($package, $namespacesToUnwrap = array())
-  {
-    echo "unwrappingPackage $package".PHP_EOL;
-    $vendorDir = __DIR__.'/../../../../';
-
-    $dir = $vendorDir.'/'.$package;
-    $path = realpath($dir); // Path to your textfiles
-
-    $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
-    foreach ($fileList as $item)
-    {
-      if ($item->isFile() && stripos($item->getExtension(), 'php') !== false)
-      {
-        if(is_writable($item->getPathName()) === false)
-        {
-          echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
-          continue;
-        }
-
-        echo "unwrapping file: ".$item->getFilename(). PHP_EOL;
-        $file_contents = file_get_contents($item->getPathName());
-
-        foreach($namespacesToUnwrap as $unwrapNamespace)
-        {
-          $file_contents = str_replace(" $unwrapNamespace\\"," ",$file_contents);
-          $file_contents = str_replace("\"$unwrapNamespace\\","\"",$file_contents);
-          $file_contents = str_replace("'$unwrapNamespace\\","'",$file_contents);
-        }
-
-        file_put_contents($item->getPathName(),$file_contents);
-      }
-
-    }
-  }
-  /**
+    /**
      * Finds the path to the file where the class is defined.
      *
      * @param string $class The name of the class
@@ -120,10 +108,10 @@ class WPpluginLoader extends ClassLoader
      */
     public function findFile($class)
     {
-      $this->prefixes       = $this->getPrefixes();
-      $this->fallbackDirs   = $this->getFallbackDirs();
-      $this->useIncludePath = $this->getUseIncludePath();
-      $this->classMap       = $this->getClassMap();
+        $this->prefixes       = $this->getPrefixes();
+        $this->fallbackDirs   = $this->getFallbackDirs();
+        $this->useIncludePath = $this->getUseIncludePath();
+        $this->classMap       = $this->getClassMap();
 
         if ('\\' == $class[0]) {
             $class = substr($class, 1);
@@ -145,9 +133,8 @@ class WPpluginLoader extends ClassLoader
 
         $classPath .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
-        //new for WP chagnes
-        //here
-        $classPathWP = substr(stristr($classPath,"/"),1);
+        //new for WP changes
+        $classPathWP = substr(stristr($classPath, "/"), 1);
 
         foreach ($this->prefixes as $prefix => $dirs) {
             if (0 === strpos($class, $prefix)) {

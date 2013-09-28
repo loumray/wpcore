@@ -17,24 +17,24 @@ namespace WPCore;
  */
 class WPshortcode extends WPaction
 {
-  protected $slug;
-  protected $view;
+    protected $slug;
+    protected $view;
 
-  public function __construct($shortcode, View $view)
-  {
-    $this->slug = $shortcode;
-    $this->view = $view;
+    public function __construct($shortcode, View $view)
+    {
+        $this->slug = $shortcode;
+        $this->view = $view;
 
-    parent::__construct('init');
-  }
+        parent::__construct('init');
+    }
 
-  public function action()
-  {
-    add_shortcode( $this->slug, array($this,'callback') );
-  }
+    public function action()
+    {
+        add_shortcode($this->slug, array($this, 'callback'));
+    }
 
-  public function callback()
-  {
-    return $this->view->getContent();
-  }
+    public function callback()
+    {
+        return $this->view->getContent();
+    }
 }

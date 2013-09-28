@@ -24,7 +24,7 @@ class WPscript
     protected $ver       = false;
     protected $in_footer  = true;
 
-    public function __construct($handle, $src = false, $deps = array(),$ver = false, $in_footer = true)
+    public function __construct($handle, $src = false, $deps = array(), $ver = false, $in_footer = true)
     {
         $this->handle    = $handle;
         $this->src       = $src;
@@ -46,13 +46,12 @@ class WPscript
 
     public function register()
     {
-        wp_register_script( 
-            $this->handle, 
-            $this->src, 
-            $this->deps, 
-            $this->ver, 
-            $this->in_footer 
+        wp_register_script(
+            $this->handle,
+            $this->src,
+            $this->deps,
+            $this->ver,
+            $this->in_footer
         );
     }
-
 }

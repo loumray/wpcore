@@ -12,23 +12,21 @@ namespace WPCore;
 
 class WPpluginTextDomain extends WPaction
 {
+    protected $domain;
+    protected $abs_rel_path;
+    protected $plugin_rel_path;
 
-  protected $domain;
-  protected $abs_rel_path;
-  protected $plugin_rel_path;
+    public function __construct($domain, $abs_rel_path, $plugin_rel_path)
+    {
+        parent::__construct('plugins_loaded');
 
-  public function __construct($domain, $abs_rel_path, $plugin_rel_path)
-  {
-    parent::__construct('plugins_loaded');
+        $this->domain = $domain;
+        $this->abs_rel_path = $abs_rel_path;
+        $this->plugin_rel_path = $plugin_rel_path;
+    }
 
-    $this->domain = $domain;
-    $this->abs_rel_path = $abs_rel_path;
-    $this->plugin_rel_path = $plugin_rel_path;
-  }
-
-  public function action()
-  {
-    load_plugin_textdomain( $this->domain, $this->abs_rel_path, $this->plugin_rel_path );
-  }
-
+    public function action()
+    {
+        load_plugin_textdomain($this->domain, $this->abs_rel_path, $this->plugin_rel_path);
+    }
 }
