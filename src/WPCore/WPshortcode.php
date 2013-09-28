@@ -15,26 +15,26 @@ namespace WPCore;
  *
  * @author Louis-Michel Raynauld <louismichel@pweb.ca>
  */
-abstract class WPshortcode implements WPhook
+class WPshortcode extends WPaction
 {
-
   protected $slug;
+  protected $view;
 
-  public function __construct($shortcode)
+  public function __construct($shortcode, View $view)
   {
     $this->slug = $shortcode;
+    $this->view = $view;
+
+    parent::__construct('init');
   }
 
-  public function register()
+  public function action()
   {
     add_shortcode( $this->slug, array($this,'callback') );
   }
 
-  public function remove()
+  public function callback()
   {
-    remove_shortcode($this->slug);
+    return $this->view->getContent();
   }
-
-  abstract public function callback();
-
 }
