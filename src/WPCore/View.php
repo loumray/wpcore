@@ -32,18 +32,28 @@ class View
     $this->data = $data;
   }
 
+  public function getContent()
+  {
+    ob_start();
+    $this->show();
+    $out = ob_get_clean();
+    return $out;
+  }
+
   public function show()
   {
-
     if(file_exists($this->file))
     {
       extract($this->data);
       include($this->file);
+      return true;
     }
     else
     {
       throw new \Exception("File not found on ".$this->file);
     }
+
+    return false;
   }
 
 }
