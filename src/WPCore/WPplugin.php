@@ -10,6 +10,9 @@
 
 namespace WPCore;
 
+use WPCore\View;
+use WPCore\admin\WPadminNotice;
+
 /**
  * WP plugin
  *
@@ -20,15 +23,18 @@ abstract class WPplugin extends WPfeature
 
     public static $instance;
 
-    protected $reqPHPVersion  = '5.3.0';
-    protected $reqWPVersion   = '3.0.0';
-    protected $langDir        = '/lang';
+    protected $reqPHPVersion = '5.3.0';
+    protected $reqWPVersion  = '3.0.0';
+    protected $reqPHPMsg     = '';
+    protected $reqWPMsg      = '';
+    protected $langDir       = '/lang';
+
     protected $errors  = array();
 
     protected $reqPlugins = array();
 
-    abstract public function install();
-    
+    protected $mainFeature;
+
     public function __construct($file, $name, $slug)
     {
         parent::__construct($name, $slug);
@@ -37,6 +43,45 @@ abstract class WPplugin extends WPfeature
         $this->setBasePath(plugin_dir_path($file));
 
         register_activation_hook($file, array($this, 'install'));
+    }
+
+    public function init()
+    {
+        if ($this->checkServerRequirements() === false) {
+            $errormsg = array();
+
+            foreach ($this->getErrors() as $error) {
+                if (($error == 'WP') && (!empty($this->reqWPMsg))) {
+                    $errormsg[] = $this->reqWPMsg; //sprintf(__('%s Requirements failed. WP version must at least %s', 'loumray-plugin-starter'), $this->getName(), $this->reqWPVersion);
+                } elseif (($error == 'PHP') && (!empty($this->reqPHPMsg))) {
+                    $errormsg[] = $this->reqPHPMsg; //sprintf(__(__('%s Requirements failed. PHP version must at least %s', 'loumray-plugin-starter')), $this->getName(), $this->reqPHPVersion);
+                }
+            }
+            $this->hook(new WPadminNotice(new View($this->getViewsPath().'admin/AdminNotice.php'), $errormsg));
+
+            return;
+        }
+
+        if (!is_null($this->mainFeature)) {
+            $this->mainFeature->init();
+            $this->hook($this->mainFeature);
+        }
+    }
+
+    public function setMainFeature(WPfeature $mainfeature)
+    {
+        $this->mainFeature = $mainfeature;
+
+        $this->mainFeature->setBaseUrl($this->getBaseUrl());
+        $this->mainFeature->setBasePath($this->getBasePath());
+    }
+
+    public function install()
+    {
+        if (!is_null($this->mainFeature)  &&
+            method_exists($this->mainFeature, 'install')) {
+            $this->mainFeature->install();
+        }
     }
 
     public function getLangDir()
@@ -57,6 +102,16 @@ abstract class WPplugin extends WPfeature
     public function setReqPhpVersion($reqPHPVersion)
     {
         $this->reqPHPVersion = $reqPHPVersion;
+    }
+
+    public function setReqPhpMsg($reqPHPMsg)
+    {
+        $this->reqPHPMsg = $reqPHPMsg;
+    }
+
+    public function setReqWpMsg($reqWPMsg)
+    {
+        $this->reqWPMsg = $reqWPMsg;
     }
 
     public function setReqWpVersion($reqWPVersion)
