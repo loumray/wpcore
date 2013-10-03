@@ -51,6 +51,11 @@ class WPsubmenuPage extends WPaction
         $this->register();
     }
 
+    public function getUrl()
+    {
+        return admin_url($this->parent_slug.'?page='.$this->menu_slug);
+    }
+
     public function setParentSlug($value)
     {
         $this->parent_slug = $value;
