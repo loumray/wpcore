@@ -43,6 +43,7 @@ abstract class WPplugin extends WPfeature
         $this->setBasePath(plugin_dir_path($file));
 
         register_activation_hook($file, array($this, 'install'));
+        register_deactivation_hook($file, array($this, 'uninstall'));
     }
 
     public function init()
@@ -81,6 +82,14 @@ abstract class WPplugin extends WPfeature
         if (!is_null($this->mainFeature)  &&
             method_exists($this->mainFeature, 'install')) {
             $this->mainFeature->install();
+        }
+    }
+
+    public function uninstall()
+    {
+        if (!is_null($this->mainFeature)  &&
+            method_exists($this->mainFeature, 'uninstall')) {
+            $this->mainFeature->uninstall();
         }
     }
 
