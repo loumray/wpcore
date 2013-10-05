@@ -44,6 +44,11 @@ class WPscript
         );
     }
 
+    public function dequeue()
+    {
+        wp_dequeue_script($this->handle);
+    }
+
     public function register()
     {
         wp_register_script(
