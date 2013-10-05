@@ -22,16 +22,16 @@ use WPCore\WPstyleAdmin;
 class WPfeaturePointerLoader extends WPaction
 {
     protected $script;
-
     protected $pointers;
-
-    public function __construct($jsBaseUrl)
+    protected $pointersJsVar;
+    
+    public function __construct($jsBaseUrl, $pointersJsVar)
     {
         parent::__construct('admin_enqueue_scripts', 500);
 
-
-        $this->script = new WPscriptFeaturePointer('installPointer', $jsBaseUrl.'installPointer.js');
-
+        $this->pointersJsVar = $pointersJsVar;
+        $this->script = new WPscriptFeaturePointer('installPointer'.$this->pointersJsVar, $jsBaseUrl.'installPointer.js');
+        
         $this->pointers =  array();
     }
 
@@ -42,18 +42,31 @@ class WPfeaturePointerLoader extends WPaction
 
     public function action()
     {
+        if (empty($this->pointers)) {
+            return false;
+        }
+
         $this->script->enqueue(array());
 
         $params = array(
             'pointers' => array()
         );
         
+        $currentScreenId = get_current_screen();
+        $currentScreenId = $currentScreenId->id;
+        $userId = get_current_user_id();
+
         foreach ($this->pointers as $pointer) {
-            if (!$pointer->isDismissed()) {
+            if ($pointer->isDisplayable($currentScreenId, $userId)) {
                 $params['pointers'][] = $pointer->toArray();
             }
         }
-        wp_localize_script($this->script->getHandle(), 'pointersParams', $params);
+
+        if (empty($params['pointers'])) {
+            $this->script->dequeue();
+            return false;
+        }
+        wp_localize_script($this->script->getHandle(), $this->pointersJsVar, $params);
 
         $pointerStyle = new WPstyleAdmin(array(), 'wp-pointer');
         $pointerStyle->enqueue(array());
