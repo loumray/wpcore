@@ -11,6 +11,7 @@
 namespace WPCore\admin;
 
 use WPCore\View;
+use WPCore\WPaction;
 
 /**
  * WP menu page
@@ -18,7 +19,7 @@ use WPCore\View;
  * @author Louis-Michel Raynauld <louismichel@pweb.ca>
  */
 
-class WPmenuPage
+class WPmenuPage extends WPaction
 {
     protected $pageTitle  = 'Custom Menu';
     protected $menuTitle  = 'Custom Menu';
@@ -38,6 +39,9 @@ class WPmenuPage
         $iconUrl = null,
         $position = null
     ) {
+
+        //Low priority so that all options from other features are loaded before panel is displayed
+        parent::__construct('admin_menu', 10000);
 
         $this->view = $view;
 
@@ -59,8 +63,11 @@ class WPmenuPage
         if (!empty($position)) {
             $this->setPosition($position);
         }
+    }
 
-        $this->register();
+    public function getUrl()
+    {
+        return admin_url('admin.php?page='.$this->menuSlug);
     }
 
     public function setPageTitle($value)
@@ -102,12 +109,6 @@ class WPmenuPage
     public function setPosition($int)
     {
         $this->position = $int;
-    }
-
-    public function register()
-    {
-        //Low priority so that all options from other features are loaded before panel is displayed
-        add_action('admin_menu', array($this,'action'), 10000);
     }
 
     public function action()
