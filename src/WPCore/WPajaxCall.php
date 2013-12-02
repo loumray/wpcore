@@ -23,6 +23,7 @@ abstract class WPajaxCall implements WPhook
     protected $mustBeLoggedIn;
     protected $jsvar;
     protected $nonceSlug;
+    protected $disableNonceCheck;
 
     protected $currentUser;
 
@@ -33,12 +34,14 @@ abstract class WPajaxCall implements WPhook
         $js_handle,
         $admin = false,
         $mustBeLoggedIn = false,
-        $nonceSlug = ""
+        $nonceSlug = "",
+        $disableNonceCheck = false
     ) {
         $this->slug     = $call_slug;
         $this->jsHandle = $js_handle;
         $this->admin    = $admin;
         $this->mustBeLoggedIn = $mustBeLoggedIn || $admin;
+        $this->disableNonceCheck = $disableNonceCheck;
 
         $this->jsvar = $this->slug.'_params';
         $this->nonceSlug = $nonceSlug;
@@ -73,14 +76,19 @@ abstract class WPajaxCall implements WPhook
         return $this->jsvar;
     }
 
-    public function init()
+    public function getScriptParams()
     {
-        $params = array(
+        $defaultParams = array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce'    => wp_create_nonce($this->nonceSlug)
         );
 
-        wp_localize_script($this->jsHandle, $this->jsvar, $params);
+        return $defaultParams;
+    }
+
+    public function init()
+    {
+        wp_localize_script($this->jsHandle, $this->jsvar, $this->getScriptParams());
     }
 
     /*
@@ -88,7 +96,9 @@ abstract class WPajaxCall implements WPhook
      */
     protected function verify()
     {
-        check_ajax_referer($this->nonceSlug, 'security');
+        if($this->disableNonceCheck !== true) {
+            check_ajax_referer($this->nonceSlug, 'security');
+        }
 
         if ($this->mustBeLoggedIn === true) {
             $this->setCurrentUser();
