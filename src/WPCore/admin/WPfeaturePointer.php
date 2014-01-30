@@ -29,6 +29,8 @@ class WPfeaturePointer
     /**
     * targetID could be wp-admin-bar-new-content, menu-settings, menu-appearance
     * position should contain edge and align index
+    * 
+    * pointerId must be lowercase
     */
     public function __construct(
         $pointerId,
@@ -37,7 +39,7 @@ class WPfeaturePointer
         $position = array('edge' => 'left', 'align' => 'center'),
         $screenId = ''
     ) {
-        $this->pointerId = $pointerId;
+        $this->pointerId = strtolower($pointerId);
         $this->targetId = $targetId;
         $this->content = $content;
         $this->position = $position;
