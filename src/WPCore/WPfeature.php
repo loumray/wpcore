@@ -28,6 +28,8 @@ abstract class WPfeature implements WPhook
     private $base_path;
     private $base_url;
 
+    private $baseRelurl;
+
     private $asset_path = 'assets/';
     private $css_path   = 'css/';
     private $js_path    = 'js/';
@@ -172,11 +174,30 @@ abstract class WPfeature implements WPhook
         return $this->base_url = get_template_directory_uri();
     }
     /**
+     * Get the theme path
+     */
+    public function getRelativeBaseUrl()
+    {
+        if (!empty($this->baseRelurl)) {
+            return $this->baseRelurl;
+        }
+        return $this->baseRelurl = str_replace(get_bloginfo('url'),'',$this->getBaseUrl());
+    }
+    /**
      * Get the theme assets url
      */
     public function getAssetsUrl()
     {
         return $this->getBaseUrl().'/'.$this->asset_path;
+    }
+    /**
+     * Get the theme assets url
+     */
+    public function getAssetsRelativeUrl()
+    {
+        $relUrl = $this->getRelativeBaseUrl().'/'.$this->asset_path;
+        
+        return $relUrl;
     }
 
     /**
