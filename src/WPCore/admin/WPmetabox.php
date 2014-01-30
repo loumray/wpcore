@@ -32,6 +32,8 @@ class WPmetabox extends WPaction
     protected $nonceAction;
     protected $nonceName;
 
+    protected $saveableClass;
+
     public function __construct(
         View $view,
         $mbId,
@@ -39,22 +41,29 @@ class WPmetabox extends WPaction
         $postType,
         $context = 'advanced',
         $priority = 'default',
+        $saveableClass = null,
         $callbackArgs = null
     ) {
 
         parent::__construct('add_meta_boxes', 10, 2);
 
-        $this->view  = $view;
-        $this->mbId    = $mbId;
-        $this->title = $title;
+        $this->view     = $view;
+        $this->mbId     = $mbId;
+        $this->title    = $title;
         $this->postType = $postType;
         $this->context  = $context;
         $this->priority = $priority;
-        $this->callbackArgs = $callbackArgs;
+        $this->saveableClass = $saveableClass;
+        $this->callbackArgs  = $callbackArgs;
 
         $this->nonceAction = $this->mbId.'_nonceaction';
         $this->nonceName   = $this->mbId.'_noncename';
 
+        if (!is_null($saveableClass) &&
+            !in_array('WPCore\admin\WPpostSaveable',class_implements($saveableClass))
+        ) {
+            throw new \InvalidArgumentException("WPmetabox saveableClass must be the name of a class that implements WPCore\WPpostSaveable interface");
+        }
     }
 
     public function getNonceAction()
@@ -80,6 +89,29 @@ class WPmetabox extends WPaction
         );
     }
 
+    /**
+    * By default
+    */
+    public function save($postId, $post)
+    {
+        if (is_null($this->saveableClass)) {
+            return false;
+        }
+
+        $class = $this->saveableClass;
+        $instance = $class::create($postId);
+
+        $instance->fetch();
+
+        if (isset($_POST[$this->mbId])) {
+            foreach ($_POST[$this->mbId] as $key => $value) {
+              $instance->set($key, sanitize_text_field($value));
+            }
+        }
+        
+        return $instance->save();
+    }
+
     public function verify()
     {
         if (isset($_POST[$this->getNonceName()]) &&
@@ -97,6 +129,12 @@ class WPmetabox extends WPaction
         $data['post'] = $post;
         $data['metabox'] = $metabox;
         $data['hidden_nonce'] = wp_nonce_field($this->nonceAction, $this->nonceName, true, false);
+
+        $class = $this->saveableClass;
+        $instance = $class::create($post->ID);
+
+        $instance->fetch();
+        $data['obj'] = $instance;
 
         $this->view->setData($data);
         $this->view->show();

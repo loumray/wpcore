@@ -26,10 +26,13 @@ class WPmetaboxLoader extends WPaction
 
     public function __construct(
         WPmetabox $metabox,
-        WPSaveMetabox $saveaction
+        WPSaveMetabox $saveaction = null
     ) {
         parent::__construct(array('load-post.php', 'load-post-new.php'));
         $this->saveaction = $saveaction;
+        if (is_null($this->saveaction)) {
+            $this->saveaction = new WPSaveMetabox();
+        }
         $this->metabox    = $metabox;
     }
 

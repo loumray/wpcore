@@ -33,26 +33,34 @@ class WPSaveMetabox extends WPaction
         $this->metabox = $metabox;
     }
 
-    public function action()
+    protected function verify($postId)
     {
-        $post_id = func_get_arg(0);
-        $post    = func_get_arg(1);
-
         if (!($this->metabox instanceof WPmetabox) || !$this->metabox->verify()) {
             return false;
         }
 
         // First we need to check if the current user is authorised to do this action.
         if ('page' == $_POST['post_type']) {
-            if (!current_user_can('edit_page', $post_id)) {
+            if (!current_user_can('edit_page', $postId)) {
                 return false;
             }
         } else {
-            if (!current_user_can('edit_post', $post_id)) {
+            if (!current_user_can('edit_post', $postId)) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    public function action()
+    {
+        $postId = func_get_arg(0);
+        $post   = func_get_arg(1);
+
+        if (!$this->verify($postId)) {
+            return false;
+        }
+        return $this->metabox->save($postId, $post);
     }
 }

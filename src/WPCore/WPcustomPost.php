@@ -1,0 +1,63 @@
+<?php
+namespace WPCore;
+
+use WPCore\admin\WPpostSaveable;
+
+class WPcustomPost implements WPpostSaveable
+{
+    protected $postId;
+    protected $post;
+    protected $meta = array();
+
+    static public function create($postId)
+    {
+        return new self($postId);
+    }
+
+    public function __construct($postId)
+    {
+        $this->postId = $postId;
+    }
+
+    public function setPost(\WP_Post $post)
+    {
+        $this->post = $post;
+        return $this;
+    }
+
+    public function getPost()
+    {
+        return $this->post;
+    }
+
+    public function get($key)
+    {
+        if (isset($this->meta[$key])) {
+            return $this->meta[$key];
+        }
+        return null;
+    }
+
+    public function set($key, $value)
+    {
+        $this->meta[$key] = $value;
+
+        return $this;
+    }
+
+    public function fetch()
+    {
+        $this->meta = get_post_meta($this->postId,'wpcmeta', true);
+        if (empty($this->meta)) {
+            $this->meta = array();
+        } else {
+            $this->meta = unserialize($this->meta);
+        }
+        return true;
+    }
+
+    public function save()
+    {
+        return update_post_meta($this->postId, 'wpcmeta', serialize($this->meta));
+    }
+}
