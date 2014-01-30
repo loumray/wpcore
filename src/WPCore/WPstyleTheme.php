@@ -18,12 +18,15 @@ namespace WPCore;
 class WPstyleTheme extends WPstyle
 {
     protected $load_condition = true;
+    protected $allowOverride = false;
+    protected $overrideDir = 'assets/css/';
 
-    public function __construct($load_condition, $handle, $src = "", $deps = array(), $ver = false, $media = 'all')
+    public function __construct($load_condition, $handle, $src = "", $deps = array(), $ver = false, $media = 'all', $allowOverride = false)
     {
         parent::__construct($handle, $src, $deps, $ver, $media);
 
         $this->load_condition = $load_condition;
+        $this->allowOverride = $allowOverride;
     }
 
     //This is unsafe but will do for now
@@ -35,9 +38,21 @@ class WPstyleTheme extends WPstyle
         return $isNeeded;
     }
 
+    public function setOverrideDir($subDir)
+    {
+        $this->overrideDir = $subdir.'/';
+        return $this;
+    }
+
     public function enqueue()
     {
         if ($this->isNeeded()) {
+            if ($this->allowOverride === true) {
+                $name = basename($this->src);
+                if ($override = locate_template($this->overrideDir.$name)) {
+                    $this->src = get_template_directory_uri() . '/'.$this->overrideDir.$name;
+                }
+            }
             parent::enqueue();
         }
     }
