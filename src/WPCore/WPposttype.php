@@ -36,6 +36,17 @@ class WPposttype extends WPaction
         return $this->slug;
     }
 
+    public function getLoop($args = array())
+    {
+        $defaults = array(
+            'post_type' => $this->slug,
+            'nopaging' => true
+        );
+        $args = wp_parse_args($args, $defaults);
+
+        return new \WP_Query($args);
+    }
+
     public function action()
     {
         register_post_type($this->slug, $this->args);
