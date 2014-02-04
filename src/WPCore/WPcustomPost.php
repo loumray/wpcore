@@ -8,6 +8,7 @@ class WPcustomPost implements WPpostSaveable
     protected $postId;
     protected $post;
     protected $meta = array();
+    protected $metakey = 'wpcmeta';
 
     static public function create($postId)
     {
@@ -47,7 +48,7 @@ class WPcustomPost implements WPpostSaveable
 
     public function fetch()
     {
-        $this->meta = get_post_meta($this->postId,'wpcmeta', true);
+        $this->meta = get_post_meta($this->postId, $this->metakey, true);
         if (empty($this->meta)) {
             $this->meta = array();
         } else {
@@ -58,6 +59,6 @@ class WPcustomPost implements WPpostSaveable
 
     public function save()
     {
-        return update_post_meta($this->postId, 'wpcmeta', serialize($this->meta));
+        return update_post_meta($this->postId, $this->metakey, serialize($this->meta));
     }
 }
