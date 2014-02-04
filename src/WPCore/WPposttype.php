@@ -31,6 +31,13 @@ class WPposttype extends WPaction
 
     }
 
+    public function setArg($arg, $value)
+    {
+        $this->args[$arg] = $value;
+
+        return $this;
+    }
+
     public function getSlug()
     {
         return $this->slug;
