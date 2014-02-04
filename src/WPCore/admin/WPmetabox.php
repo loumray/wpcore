@@ -59,9 +59,9 @@ class WPmetabox extends WPaction
         $this->nonceAction = $this->mbId.'_nonceaction';
         $this->nonceName   = $this->mbId.'_noncename';
 
-        if (!is_null($saveableClass) &&
-            !in_array('WPCore\admin\WPpostSaveable',class_implements($saveableClass))
-        ) {
+        if (is_null($saveableClass)) {
+            $this->saveableClass = '\WPCore\WPcustomPost';
+        } elseif (!in_array('WPCore\admin\WPpostSaveable',class_implements($saveableClass))) {
             throw new \InvalidArgumentException("WPmetabox saveableClass must be the name of a class that implements WPCore\WPpostSaveable interface");
         }
     }
@@ -128,6 +128,7 @@ class WPmetabox extends WPaction
         $data = array();
         $data['post'] = $post;
         $data['metabox'] = $metabox;
+        $data['savearray'] = $this->mbId;
         $data['hidden_nonce'] = wp_nonce_field($this->nonceAction, $this->nonceName, true, false);
 
         $class = $this->saveableClass;
