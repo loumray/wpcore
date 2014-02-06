@@ -21,6 +21,8 @@ class WPposttype extends WPaction
     protected $slug;
     protected $args;
 
+    protected $taxonomies = array();
+
     public function __construct($slug, $args = array())
     {
         parent::__construct('init');
@@ -52,6 +54,20 @@ class WPposttype extends WPaction
         $args = wp_parse_args($args, $defaults);
 
         return new \WP_Query($args);
+    }
+
+    public function addTaxonomy($slug, $args = array())
+    {
+        $this->taxonomies[$slug] = new WPtaxonomy($slug, $this->getSlug(), $args);
+        $this->setArg('taxonomies', array_keys($this->taxonomies));
+    }
+
+    public function register()
+    {
+        foreach ($this->taxonomies as $slug => $taxonomy) {
+            $taxonomy->register();
+        }
+        parent::register();
     }
 
     public function action()
