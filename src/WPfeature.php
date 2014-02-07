@@ -31,6 +31,7 @@ abstract class WPfeature implements WPhook
     private $baseRelurl;
 
     private $asset_path = 'assets/';
+    private $img_path   = 'img/';
     private $css_path   = 'css/';
     private $js_path    = 'js/';
 
@@ -186,16 +187,16 @@ abstract class WPfeature implements WPhook
     /**
      * Get the theme assets url
      */
-    public function getAssetsUrl()
+    public function getAssetsUrl($end = '')
     {
-        return $this->getBaseUrl().'/'.$this->asset_path;
+        return $this->getBaseUrl().'/'.$this->asset_path.$end;
     }
     /**
      * Get the theme assets url
      */
-    public function getAssetsRelativeUrl()
+    public function getAssetsRelativeUrl($end = '')
     {
-        $relUrl = $this->getRelativeBaseUrl().'/'.$this->asset_path;
+        $relUrl = $this->getRelativeBaseUrl().'/'.$this->asset_path.$end;
         
         return $relUrl;
     }
@@ -203,21 +204,42 @@ abstract class WPfeature implements WPhook
     /**
      * Get the theme css url
      */
-    public function getCssUrl()
+    public function getCssUrl($end = '')
     {
         if (!empty($this->css_url)) {
             return $this->css_url;
         }
-        return $this->css_url = $this->getBaseUrl().'/'.$this->asset_path.$this->css_path;
+        return $this->css_url = $this->getBaseUrl().'/'.$this->asset_path.$this->css_path.$end;
     }
     /**
      * Get the theme js url
      */
-    public function getJsUrl()
+    public function getJsUrl($end = '')
     {
         if (!empty($this->js_url)) {
             return $this->js_url;
         }
-        return $this->js_url = $this->getBaseUrl().'/'.$this->asset_path.$this->js_path;
+        return $this->js_url = $this->getBaseUrl().'/'.$this->asset_path.$this->js_path.$end;
+    }
+
+    /**
+     * Get img url
+     */
+    public function getImgUrl($end = '')
+    {
+        if (!empty($this->img_url)) {
+            return $this->img_url;
+        }
+        return $this->img_url = $this->getBaseUrl().'/'.$this->asset_path.$this->img_path.$end;
+    }
+
+    /**
+     * Get img relative url
+     */
+    public function getImgRelativeUrl($end = '')
+    {
+        $relUrl = $this->getRelativeBaseUrl().'/'.$this->asset_path.$this->img_path.$end;
+        
+        return $relUrl;
     }
 }
