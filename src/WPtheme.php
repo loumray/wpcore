@@ -15,31 +15,25 @@ namespace WPCore;
  *
  * @author Louis-Michel Raynauld <louismichel@pweb.ca>
  */
-class WPtheme
+abstract class WPtheme extends WPfeature
 {
-    protected $req_php_version  = '5.3.0';
-    protected $req_wp_version   = '3.0.0';
 
-    protected $theme_name;
+    // public function __construct($file, $name, $slug)
+    // {
+    //     parent::__construct($name, $slug);
 
-    protected $features = array();
+    //     $this->setBaseUrl(plugin_dir_url($file));
+    //     $this->setBasePath(plugin_dir_path($file));
 
-    public function __construct($name)
-    {
-        $this->theme_name = $name;
-    }
+    //     // register_activation_hook($file, array($this, 'install'));
+    //     // register_deactivation_hook($file, array($this, 'uninstall'));
+    // }
 
-    public function addFeature(WPfeature $feature)
-    {
-        $this->features[] = $feature;
-    }
+    // public function install()
+    // {
+    // }
 
-    public function run()
-    {
-        if (!empty($this->features)) {
-            foreach ($this->features as $feature) {
-                $feature->register();
-            }
-        }
-    }
+    // public function uninstall()
+    // {
+    // }
 }
