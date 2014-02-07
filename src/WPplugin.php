@@ -21,8 +21,6 @@ use WPCore\admin\WPadminNotice;
 abstract class WPplugin extends WPfeature
 {
 
-    public static $instance;
-
     protected $reqPHPVersion = '5.3.0';
     protected $reqWPVersion  = '3.0.0';
     protected $reqPHPMsg     = '';
