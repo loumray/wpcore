@@ -20,7 +20,7 @@ use WPCore\WPScript;
  * @author Louis-Michel Raynauld <louismichel@pweb.ca>
  */
 
-class WPThemeCustomizer extends WPaction
+class WPthemeCustomizer extends WPaction
 {
     protected $prefix = '';
     protected $livePreviewScript;
