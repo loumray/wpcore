@@ -164,6 +164,14 @@ abstract class WPfeature implements WPhook
     {
         return $this->getBasePath().'/'.$this->views_path;
     }
+
+    /**
+     * Get the view path
+     */
+    public function getViewPath($view = '')
+    {
+        return $this->getBasePath().'/'.$this->views_path.$view;
+    }
     /**
      * Get the theme path
      */
