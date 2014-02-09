@@ -58,7 +58,7 @@ class WPoption
 
     public function fetch()
     {
-        $this->value = get_site_option($this->name);
+        $this->value = get_option($this->name);
         $this->fetched = true;
     }
     /*
@@ -66,18 +66,18 @@ class WPoption
     */
     public function delete()
     {
-        return delete_site_option($this->name);
+        return delete_option($this->name);
     }
 
     public function save()
     {
-        if (get_site_option($this->name) !== false) {
-            return update_site_option($this->name, $this->value);
+        if (get_option($this->name) !== false) {
+            return update_option($this->name, $this->value);
         } else {
             // The option hasn't been added yet. We'll add it with $autoload set to 'no'.
             $autoload = ($this->autoload === true) ? 'yes' : 'no';
 
-            return add_site_option($this->name, $this->value, null, $autoload);
+            return add_option($this->name, $this->value, null, $autoload);
         }
     }
 }
