@@ -144,7 +144,12 @@ class WPthemeCustomizer extends WPaction
 
     public function save()
     {
-        echo 'TODO Regenerate CSS with SASS!?!?! :)';
+        // echo 'TODO Regenerate CSS with SASS!?!?! :)';
 
+    }
+
+    public function getMod($id, $default = null)
+    {
+        return get_theme_mod($this->prefix.$id, $default);
     }
 }
