@@ -127,6 +127,12 @@ abstract class WPfeature implements WPhook
 
     public function hook(WPhook $hook)
     {
+        if ($hook instanceof WPfeature) {
+            $relPath = substr($hook->getBasePath(), strlen($this->getBasePath()));
+            $hook->setBaseUrl($this->getBaseUrl().$relPath);
+            $hook->init();
+        }
+
         $this->hooks[] = $hook;
     }
 
