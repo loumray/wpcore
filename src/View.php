@@ -22,6 +22,7 @@ class View
     protected $data;
 
     protected $allowOverride = false;
+    protected $overrideName = '';
     protected $overrideDir = '';
 
     public function __construct($file, $data = array())
@@ -46,9 +47,13 @@ class View
         return $out;
     }
 
-    public function setAllowOverride($allow = true)
+    public function setAllowOverride($allow = true, $overrideName = '')
     {
         $this->allowOverride = $allow;
+        $this->overrideName = $this->name;
+        if (!empty($overrideName)) {
+            $this->overrideName = $overrideName;
+        }
         return $this;
     }
     public function setOverrideDir($subDir)
@@ -60,7 +65,7 @@ class View
     public function show()
     {
         if (($this->allowOverride === true) && 
-            $override = locate_template($this->overrideDir.$this->name)
+            $override = locate_template($this->overrideDir.$this->overrideName)
         ) {
             $this->file = $override;
         } 
