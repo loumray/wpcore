@@ -12,6 +12,7 @@ namespace WPCore\admin;
 
 use WPCore\View;
 use WPCore\WPaction;
+use WPCore\Forms\FieldSet;
 
 /**
  * WP metabox
@@ -33,6 +34,7 @@ class WPmetabox extends WPaction
     protected $nonceName;
 
     protected $saveableClass;
+    protected $fieldSet;
 
     public function __construct(
         View $view,
@@ -75,9 +77,14 @@ class WPmetabox extends WPaction
         return $this->nonceName;
     }
 
+    public function setFieldSet(FieldSet $fieldset)
+    {
+        $this->fieldSet = $fieldset;
+        $this->fieldSet->init();
+    }
+
     public function action()
     {
-
         add_meta_box(
             $this->mbId,
             $this->title,
@@ -125,17 +132,24 @@ class WPmetabox extends WPaction
 
     public function view($post, $metabox)
     {
+        $class = $this->saveableClass;
+        $instance = $class::create($post->ID);
+        $instance->fetch();
+
         $data = array();
+        $data['obj'] = $instance;
         $data['post'] = $post;
         $data['metabox'] = $metabox;
         $data['savearray'] = $this->mbId;
-        $data['hidden_nonce'] = wp_nonce_field($this->nonceAction, $this->nonceName, true, false);
+        $data['fieldSet'] = $this->fieldSet;
+        $data['hiddenNonce'] = wp_nonce_field($this->nonceAction, $this->nonceName, true, false);
 
-        $class = $this->saveableClass;
-        $instance = $class::create($post->ID);
-
-        $instance->fetch();
-        $data['obj'] = $instance;
+        if (!empty($this->fieldSet)) {
+            foreach ($this->fieldSet as $field) {
+                $field->attr('value', $instance->get($field->attr('name')));
+                $field->attr('name', $this->mbId.'['.$field->attr('name').']');
+            }
+        }
 
         $this->view->setData($data);
         $this->view->show();
