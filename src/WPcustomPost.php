@@ -10,6 +10,14 @@ class WPcustomPost implements WPpostSaveable
     protected $meta = array();
     protected $metakey = 'wpcmeta';
 
+    public static function getInstance($id)
+    {
+        $post = new self($id);
+        $post->setPost(\WP_Post::get_instance($id));
+        $post->fetch();
+        return $post;
+    }
+
     static public function create($postId)
     {
         return new self($postId);
