@@ -39,12 +39,12 @@ class WPcustomPost implements WPpostSaveable
         return $this->post;
     }
 
-    public function get($key)
+    public function get($key, $default = null)
     {
         if (isset($this->meta[$key])) {
             return $this->meta[$key];
         }
-        return null;
+        return $default;
     }
 
     public function set($key, $value)
