@@ -152,4 +152,18 @@ class WPthemeCustomizer extends WPaction
     {
         return get_theme_mod($this->prefix.$id, $default);
     }
+
+    /**
+     * Sets the value of livePreviewScript.
+     *
+     * @param mixed $livePreviewScript the live preview script
+     *
+     * @return self
+     */
+    public function setLivePreviewScript(WPScript $livePreviewScript)
+    {
+        $this->livePreviewScript = $livePreviewScript;
+
+        return $this;
+    }
 }
