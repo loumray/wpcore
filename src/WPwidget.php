@@ -19,7 +19,7 @@ abstract class WPwidget extends \WP_Widget
 {
     public function __construct($id_base = false, $name, $widget_options = array(), $control_options = array())
     {
-        parent::__construct($id_base, $name, $widget_options = array(), $control_options = array());
+        parent::__construct($id_base, $name, $widget_options, $control_options);
     }
 
     //TONOTICE Should be abstract but cannot because it is not abstract in WP_Widget
