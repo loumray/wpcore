@@ -13,6 +13,7 @@ namespace WPCore\admin;
 use WPCore\View;
 use WPCore\WPaction;
 use WPCore\WPScript;
+use WPCore\WPStyle;
 
 /**
  * WP Theme Customizer
@@ -20,10 +21,12 @@ use WPCore\WPScript;
  * @author Louis-Michel Raynauld <louismichel@pweb.ca>
  */
 
-class WPthemeCustomizer extends WPaction
+abstract class WPthemeCustomizer extends WPaction
 {
     protected $prefix = '';
     protected $livePreviewScript;
+    protected $scripts = array();
+    protected $styles  = array();
 
     protected $sections = array();
     protected $settings = array();
@@ -36,6 +39,8 @@ class WPthemeCustomizer extends WPaction
         if (!is_null($livePreviewScript)) {
             $this->livePreviewScript = $livePreviewScript;
         }
+
+        
     }
 
     public function setPrefix($prefix) 
@@ -47,17 +52,17 @@ class WPthemeCustomizer extends WPaction
 
     public function register()
     {
-        if (!is_null($this->livePreviewScript)) {
-            add_action('customize_preview_init', array($this , 'loadScript'));
-        }
-
+        add_action('customize_preview_init', array($this , 'loadScript'));
         add_action('customize_save_after', array($this , 'save'));
+        add_action('customize_controls_enqueue_scripts', array($this, 'enqueueAssets'));
         parent::register();
     }
 
     public function loadScript()
     {
-        $this->livePreviewScript->enqueue();
+        if (!is_null($this->livePreviewScript)) {
+            $this->livePreviewScript->enqueue();
+        }
     }
 
     public function addSection($sectionId, $properties)
@@ -100,10 +105,12 @@ class WPthemeCustomizer extends WPaction
         $this->controls[$controlId]['properties'] = wp_parse_args($properties, $defaults);
     }
 
+    abstract public function init();
+
     public function action()
     {
         $wpCustomize = func_get_arg(0);
-
+        $this->init();
         foreach ($this->sections as $id => $properties) {
             $wpCustomize->add_section($this->prefix.$id, $properties);
         }
@@ -142,11 +149,7 @@ class WPthemeCustomizer extends WPaction
         }
     }
 
-    public function save()
-    {
-        // echo 'TODO Regenerate CSS with SASS!?!?! :)';
-
-    }
+    public function save() {}
 
     public function getMod($id, $default = null)
     {
@@ -165,5 +168,24 @@ class WPthemeCustomizer extends WPaction
         $this->livePreviewScript = $livePreviewScript;
 
         return $this;
+    }
+
+    public function addScript(WPscript $script)
+    {
+        $this->scripts[] = $script;
+    }
+
+    public function addStyle(WPstyle $style)
+    {
+        $this->styles[] = $style;
+    }
+    public function enqueueAssets()
+    {
+        foreach ($this->scripts as $script) {
+            $script->enqueue();
+        }
+        foreach ($this->styles as $style) {
+            $style->enqueue();
+        }
     }
 }
