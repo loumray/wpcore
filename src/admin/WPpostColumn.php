@@ -12,11 +12,10 @@ namespace WPCore\admin;
 
 use WPCore\View;
 use WPCore\WPaction;
-use WPCore\WPposttype;
 
 class WPpostColumn extends WPaction
 {
-    protected $postType;
+    protected $postType = 'post';
     protected $position = 3;
     protected $slug  = 'slug';
     protected $title = 'custom title';
@@ -39,13 +38,12 @@ class WPpostColumn extends WPaction
 
     public function action()
     {
-        //By default, add column to native post type
-        if (is_null($this->postType)) {
+        if ($this->postType == 'post') {
             add_action("manage_posts_custom_column", array($this, 'content'), 10, 2);
             add_filter("manage_edit-post_columns", array($this, 'header'));
         } else {
-            add_action("manage_".$this->postType->getSlug()."_posts_custom_column", array($this, 'content'), 10, 2);
-            add_filter("manage_edit-".$this->postType->getSlug()."_columns", array($this, 'header'));
+            add_action("manage_".$this->postType."_posts_custom_column", array($this, 'content'), 10, 2);
+            add_filter("manage_edit-".$this->postType."_columns", array($this, 'header'));
         }
         
     }
@@ -83,9 +81,9 @@ class WPpostColumn extends WPaction
      *
      * @return self
      */
-    public function setPostType(WPposttype $postType)
+    public function setPostType($postTypeSlug)
     {
-        $this->postType = $postType;
+        $this->postType = $postTypeSlug;
 
         return $this;
     }
