@@ -8,7 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace WPCore;
+namespace WPCore\admin;
+
+use WPCore\View;
+use WPCore\WPaction;
+use WPCore\WPposttype;
 
 class WPpostColumn extends WPaction
 {

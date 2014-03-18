@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace WPCore;
+namespace WPCore\admin;
 
 class WPpageColumn extends WPpostColumn
 {
