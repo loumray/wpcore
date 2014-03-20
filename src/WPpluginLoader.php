@@ -28,9 +28,11 @@ class WPpluginLoader extends ClassLoader
 
     public static function wrapPackage($installedPackage, $namespacesWrapper)
     {
-        $vendorDir = __DIR__.'/../../../../';
+        $vendorDir = __DIR__.'/../../../';
 
-        $namespaces = require __DIR__.'/../../../../composer/autoload_namespaces.php';
+        $namespaces = require __DIR__.'/../../../composer/autoload_namespaces.php';
+        $namespacesPsr4 = require __DIR__.'/../../../composer/autoload_psr4.php';
+        $namespaces = array_merge($namespaces, $namespacesPsr4);
         $newRootNamespace = $namespacesWrapper;
 
         echo "----- wrapping package ".$installedPackage." into namespace $newRootNamespace -------". PHP_EOL;
@@ -72,7 +74,7 @@ class WPpluginLoader extends ClassLoader
     public static function unwrapPackage($package, $namespacesToUnwrap = array())
     {
         echo "unwrappingPackage $package".PHP_EOL;
-        $vendorDir = __DIR__.'/../../../../';
+        $vendorDir = __DIR__.'/../../../';
 
         $dir = $vendorDir.'/'.$package;
         $path = realpath($dir); // Path to your textfiles
