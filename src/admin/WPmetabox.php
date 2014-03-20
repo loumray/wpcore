@@ -12,7 +12,7 @@ namespace WPCore\admin;
 
 use WPCore\View;
 use WPCore\WPaction;
-use WPCore\Forms\FieldSet;
+use WPForms\FieldSet;
 
 /**
  * WP metabox
@@ -80,7 +80,6 @@ class WPmetabox extends WPaction
     public function setFieldSet(FieldSet $fieldset)
     {
         $this->fieldSet = $fieldset;
-        $this->fieldSet->init();
     }
 
     public function action()

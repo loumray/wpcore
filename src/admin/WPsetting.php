@@ -12,7 +12,7 @@ namespace WPCore\admin;
 
 use WPCore\Config;
 use WPCore\View;
-use WPCore\Forms\AbstractField;
+use WPForms\AbstractField;
 
 /**
  * WP admin head

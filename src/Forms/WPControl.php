@@ -13,9 +13,9 @@ namespace WPCore\Forms;
 use pweb\domlib\Asset\StringAsset;
 use pweb\domlib\Asset\FileAsset;
 
-class Date extends AbstractField
+class WPControl extends AbstractField
 {
-  public function __construct($attributes)
+  public function __construct($WPControlClass)
   {
     $this->attributes['settings'] = "";
     parent::__construct($attributes);
@@ -32,9 +32,11 @@ class Date extends AbstractField
     }
 
     $this->addAsset(new FileAsset('datepicker_js', $this->assetsPath.'/libs/jquery-ui-1.9.2.datepicker.js','js',true));
+    $this->addAsset(new FileAsset('timepicker_js', $this->assetsPath.'/libs/datepicker-time-addon/jquery-ui-timepicker-addon.js','js',true));
     $this->addAsset(new FileAsset('datepicker_css', $this->assetsPath.'/css/ui.datepicker.css', 'css', true));
+    $this->addAsset(new FileAsset('datepicker_css', $this->assetsPath.'/libs/datepicker-time-addon/jquery-ui-timepicker-addon.css', 'css', true));
 
-    $js = "jQuery( '#".$this->attributes['id']."' ).datepicker({".$this->attributes['settings']."});\n";
+    $js = "jQuery( '#".$this->attributes['id']."' ).datetimepicker({".$this->attributes['settings']."});\n";
     $this->addAsset(new StringAsset('datepicker-'.$this->attributes['id'], $js ));
   }
   /**
