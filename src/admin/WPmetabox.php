@@ -12,7 +12,7 @@ namespace WPCore\admin;
 
 use WPCore\View;
 use WPCore\WPaction;
-use WPForms\FieldSet;
+use WPCore\Forms\FieldSetInterface;
 
 /**
  * WP metabox
@@ -77,7 +77,7 @@ class WPmetabox extends WPaction
         return $this->nonceName;
     }
 
-    public function setFieldSet(FieldSet $fieldset)
+    public function setFieldSet(FieldSetInterface $fieldset)
     {
         $this->fieldSet = $fieldset;
     }

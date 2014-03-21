@@ -12,7 +12,7 @@ namespace WPCore\admin;
 
 use WPCore\Config;
 use WPCore\View;
-use WPForms\AbstractField;
+use WPCore\Forms\FieldInterface;
 
 /**
  * WP admin head
@@ -34,7 +34,7 @@ class WPsetting
         $title,
         $pageMenuSlug,
         $section = 'default',
-        AbstractField $field = null,
+        FieldInterface $field = null,
         $args = array()
     ) {
         $this->id = $id;
