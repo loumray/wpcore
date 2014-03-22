@@ -32,12 +32,12 @@ class WPmetabox extends WPaction
     protected $callbackArgs;
     protected $nonceAction;
     protected $nonceName;
+    protected $viewData = array();
 
     protected $saveableClass;
     protected $fieldSet;
 
     public function __construct(
-        View $view,
         $mbId,
         $title,
         $postType,
@@ -49,7 +49,6 @@ class WPmetabox extends WPaction
 
         parent::__construct('add_meta_boxes', 10, 2);
 
-        $this->view     = $view;
         $this->mbId     = $mbId;
         $this->title    = $title;
         $this->postType = $postType;
@@ -129,28 +128,71 @@ class WPmetabox extends WPaction
         return false;
     }
 
+    public function setView(View $view)
+    {
+        $this->view = $view;
+
+        return  $this;
+    }
+    public function setViewData($data)
+    {
+        foreach ($data as $key => $val) {
+            switch ($key) {
+                case 'obj':
+                case 'post':
+                case 'metabox':
+                case 'savearray':
+                case 'fieldSet':
+                case 'hiddenNonce':
+                    throw new \InvalidArgumentException('The index '.$key. ' is used and will be overwritten. Please use a different one.');
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        $this->viewData = $data;
+
+        return $this;
+    }
+
     public function view($post, $metabox)
     {
         $class = $this->saveableClass;
         $instance = $class::create($post->ID);
         $instance->fetch();
 
-        $data = array();
-        $data['obj'] = $instance;
-        $data['post'] = $post;
-        $data['metabox'] = $metabox;
-        $data['savearray'] = $this->mbId;
-        $data['fieldSet'] = $this->fieldSet;
-        $data['hiddenNonce'] = wp_nonce_field($this->nonceAction, $this->nonceName, true, false);
+        $hiddenNonce = wp_nonce_field($this->nonceAction, $this->nonceName, true, false);
+        if (!is_null($this->view)) {
+            $data = $this->view->getData();
+            $data['obj'] = $instance;
+            $data['post'] = $post;
+            $data['metabox'] = $metabox;
+            $data['savearray'] = $this->mbId;
+            $data['fieldSet'] = $this->fieldSet;
+            $data['hiddenNonce'] = $hiddenNonce;
 
-        if (!empty($this->fieldSet)) {
+            $this->view->setData($data);
+            $this->view->show();
+
+        } elseif (!empty($this->fieldSet)) {
             foreach ($this->fieldSet as $field) {
                 $field->attr('value', $instance->get($field->attr('name')));
                 $field->attr('name', $this->mbId.'['.$field->attr('name').']');
             }
+            echo $hiddenNonce;
+            $this->fieldSet->render();
         }
+        
+    }
 
-        $this->view->setData($data);
-        $this->view->show();
+    /**
+     * Gets the value of view.
+     *
+     * @return mixed
+     */
+    public function getView()
+    {
+        return $this->view;
     }
 }
