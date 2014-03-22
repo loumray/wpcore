@@ -87,4 +87,14 @@ class View
 
         return false;
     }
+
+    /**
+     * Gets the value of data.
+     *
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 }
