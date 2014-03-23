@@ -74,7 +74,7 @@ class WPsetting
     {
         if (!is_null($this->field)) {
             $this->field->attr('name', $this->id);
-            echo $this->field->toHtml();
+            $this->field->render();
         }
     }
 
