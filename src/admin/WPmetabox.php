@@ -105,9 +105,7 @@ class WPmetabox extends WPaction
 
         $class = $this->saveableClass;
         $instance = $class::create($postId);
-
-        // $instance->fetch();
-
+        
         if (isset($_POST[$this->mbId])) {
             foreach ($_POST[$this->mbId] as $key => $value) {
               $instance->set($key, sanitize_text_field($value));
