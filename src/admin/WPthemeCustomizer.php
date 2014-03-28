@@ -149,7 +149,7 @@ abstract class WPthemeCustomizer extends WPaction
         }
     }
 
-    public function save() {}
+    public function save($customizer) {}
 
     public function getMod($id, $default = null)
     {
