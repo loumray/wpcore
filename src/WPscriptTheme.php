@@ -17,22 +17,26 @@ namespace WPCore;
  */
 class WPscriptTheme extends WPscript
 {
-    protected $load_condition = true;
+    protected $loadCondition = true;
 
-    public function __construct($load_condition, $handle, $src = false, $deps = array(), $ver = false, $in_footer = true)
+    public function __construct($loadCondition, $handle, $src = false, $deps = array(), $ver = false, $in_footer = true)
     {
         parent::__construct($handle, $src, $deps, $ver, $in_footer);
 
-        $this->load_condition = $load_condition;
+        $this->loadCondition = $loadCondition;
     }
 
-    //TODO This might be unsafe to change
     public function isNeeded()
     {
-        $isNeeded = $this->load_condition;
-        eval("\$isNeeded = $isNeeded;");
+        switch ($this->loadCondition) {
+            case 'comments':
+                return is_single() && comments_open() && get_option('thread_comments');
+            case 'always':
+            default:
+                return true;
+        }
 
-        return $isNeeded;
+        return true;
     }
 
     public function enqueue()

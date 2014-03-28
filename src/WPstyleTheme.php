@@ -17,25 +17,29 @@ namespace WPCore;
  */
 class WPstyleTheme extends WPstyle
 {
-    protected $load_condition = true;
+    protected $loadCondition = true;
     protected $allowOverride = false;
     protected $overrideDir = 'assets/css/';
 
-    public function __construct($load_condition, $handle, $src = "", $deps = array(), $ver = false, $media = 'all', $allowOverride = false)
+    public function __construct($loadCondition, $handle, $src = "", $deps = array(), $ver = false, $media = 'all', $allowOverride = false)
     {
         parent::__construct($handle, $src, $deps, $ver, $media);
 
-        $this->load_condition = $load_condition;
+        $this->loadCondition = $loadCondition;
         $this->allowOverride = $allowOverride;
     }
 
-    //This is unsafe but will do for now
     public function isNeeded()
     {
-        $isNeeded = $this->load_condition;
-        eval("\$isNeeded = $isNeeded;");
+        switch ($this->loadCondition) {
+            case 'comments':
+                return is_single() && comments_open() && get_option('thread_comments');
+            case 'always':
+            default:
+                return true;
+        }
 
-        return $isNeeded;
+        return true;
     }
 
     public function setOverrideDir($subDir)
