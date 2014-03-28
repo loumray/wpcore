@@ -8,7 +8,7 @@ class WPcustomPost implements WPpostSaveable
     protected $postId;
     protected $post;
     protected $meta = array();
-    protected $metakey = 'wpcmeta';
+    protected $metaprefix = '';
 
     public static function getInstance($id)
     {
@@ -23,6 +23,15 @@ class WPcustomPost implements WPpostSaveable
         return new self($postId);
     }
 
+    protected function key($key)
+    {
+        return $this->metaprefix.$key;
+    }
+
+    public function setMetaPrefix($prefix)
+    {
+        $this->metaprefix = $prefix;
+    }
     public function __construct($postId)
     {
         $this->postId = $postId;
@@ -52,6 +61,14 @@ class WPcustomPost implements WPpostSaveable
 
     public function get($key, $default = null)
     {
+        if(isset($this->post->$key)) {
+            return $this->post->$key;
+        }
+        $key = $this->key($key);
+        if(isset($this->post->$key)) {
+            return $this->post->$key;
+        }
+
         if (isset($this->meta[$key])) {
             return $this->meta[$key];
         }
@@ -67,17 +84,25 @@ class WPcustomPost implements WPpostSaveable
 
     public function fetch()
     {
-        $this->meta = get_post_meta($this->postId, $this->metakey, true);
+        $this->meta = get_post_meta($this->postId);
         if (empty($this->meta)) {
             $this->meta = array();
-        } else {
-            $this->meta = unserialize($this->meta);
+        }
+        foreach ($this->meta as $key => $value) {
+            if (is_array($value) && count($value) === 1) {
+                $this->meta[$key] = $value[0];
+            } 
         }
         return true;
     }
 
     public function save()
     {
-        return update_post_meta($this->postId, $this->metakey, serialize($this->meta));
+        $changed = true;
+        foreach($this->meta as $key => $value) {
+            $key = $this->key($key);
+            $changed = update_post_meta($this->postId, $key, $value) || $changed;
+        }
+        return $changed;
     }
 }
