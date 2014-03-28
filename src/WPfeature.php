@@ -164,6 +164,24 @@ abstract class WPfeature implements WPhook
     }
 
     /**
+     * Get the theme assets path
+     */
+    public function getCssPath()
+    {
+        return $this->getBasePath().'/'.$this->asset_path.$this->css_path;
+    }
+
+
+    /**
+     * Get the theme path
+     */
+    public function setViewsPath($viewPath)
+    {
+        $this->views_path = rtrim($viewPath, '/').'/';
+        return $this;
+    }
+
+    /**
      * Get the theme path
      */
     public function getViewsPath()
