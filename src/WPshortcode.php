@@ -20,7 +20,7 @@ class WPshortcode extends WPaction
     protected $slug;
     protected $view;
 
-    public function __construct($shortcode, View $view)
+    public function __construct($shortcode, View $view = null)
     {
         $this->slug = $shortcode;
         $this->view = $view;
@@ -35,6 +35,10 @@ class WPshortcode extends WPaction
 
     public function callback()
     {
+        if (is_null($this->view)) {
+            return '';
+        }
+        
         return $this->view->getContent();
     }
 }
