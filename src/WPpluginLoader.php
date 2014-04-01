@@ -57,8 +57,12 @@ class WPpluginLoader extends ClassLoader
                     continue;
                 }
 
-                $file_contents = file_get_contents($item->getPathName());
-
+                //TODO read and replace on the fly
+                $itemFile = new \SplFileObject($item->getPathName());
+                $file_contents = "";
+                while (!$itemFile->eof()) {
+                    $file_contents.= $itemFile->fgets();
+                }
                 foreach ($supplierstochange as $supplier => $new) {
                     $file_contents = str_replace(" $supplier\\", " $new\\", $file_contents);
                     $file_contents = str_replace("\"$supplier\\", "\"$new\\", $file_contents);
@@ -66,7 +70,8 @@ class WPpluginLoader extends ClassLoader
                     $file_contents = str_replace(" $supplier;", " $new;", $file_contents);
                 }
 
-                file_put_contents($item->getPathName(), $file_contents);
+                $itemFile = new \SplFileObject($item->getPathName(), "w");
+                $itemFile->fwrite($file_contents);
             }
         }
     }
@@ -88,7 +93,13 @@ class WPpluginLoader extends ClassLoader
                 }
 
                 echo "unwrapping file: ".$item->getFilename(). PHP_EOL;
-                $file_contents = file_get_contents($item->getPathName());
+
+                //TODO read and replace on the fly
+                $itemFile = new \SplFileObject($item->getPathName());
+                $file_contents = "";
+                while (!$itemFile->eof()) {
+                    $file_contents.= $itemFile->fgets();
+                }
 
                 foreach ($namespacesToUnwrap as $unwrapNamespace) {
                     $file_contents = str_replace(" $unwrapNamespace\\", " ", $file_contents);
@@ -96,7 +107,8 @@ class WPpluginLoader extends ClassLoader
                     $file_contents = str_replace("'$unwrapNamespace\\", "'", $file_contents);
                 }
 
-                file_put_contents($item->getPathName(), $file_contents);
+                $itemFile = new \SplFileObject($item->getPathName(), "w");
+                $itemFile->fwrite($file_contents);
             }
 
         }
