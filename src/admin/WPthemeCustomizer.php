@@ -43,7 +43,7 @@ abstract class WPthemeCustomizer extends WPaction
         
     }
 
-    public function setPrefix($prefix) 
+    public function setPrefix($prefix)
     {
         $this->prefix = $prefix;
 
@@ -55,6 +55,7 @@ abstract class WPthemeCustomizer extends WPaction
         add_action('customize_preview_init', array($this , 'loadScript'));
         add_action('customize_save_after', array($this , 'save'));
         add_action('customize_controls_enqueue_scripts', array($this, 'enqueueAssets'));
+        add_action('customize_register', array($this, 'customizeDefault'));
         parent::register();
     }
 
@@ -63,6 +64,11 @@ abstract class WPthemeCustomizer extends WPaction
         if (!is_null($this->livePreviewScript)) {
             $this->livePreviewScript->enqueue();
         }
+    }
+
+    public function customizeDefault($wpCustomizer)
+    {
+        return;
     }
 
     public function addSection($sectionId, $properties)
@@ -149,11 +155,14 @@ abstract class WPthemeCustomizer extends WPaction
         }
     }
 
-    public function save($customizer) {}
-
-    public function getMod($id, $default = null)
+    public function save($customizer)
     {
-        return get_theme_mod($this->prefix.$id, $default);
+        return;
+    }
+
+    public function getMod($modId, $default = null)
+    {
+        return get_theme_mod($this->prefix.$modId, $default);
     }
 
     /**
