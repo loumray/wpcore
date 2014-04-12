@@ -62,7 +62,7 @@ class WPmetabox extends WPaction
 
         if (is_null($saveableClass)) {
             $this->saveableClass = '\WPCore\WPcustomPost';
-        } elseif (!in_array('WPCore\admin\WPpostSaveable',class_implements($saveableClass))) {
+        } elseif (!in_array('WPCore\admin\WPpostSaveable', class_implements($saveableClass))) {
             throw new \InvalidArgumentException("WPmetabox saveableClass must be the name of a class that implements WPCore\WPpostSaveable interface");
         }
     }
@@ -108,9 +108,10 @@ class WPmetabox extends WPaction
         
         if (isset($_POST[$this->mbId])) {
             foreach ($_POST[$this->mbId] as $key => $value) {
-              $instance->set($key, sanitize_text_field($value));
+                $instance->set($key, sanitize_text_field($value));
             }
         }
+
         return $instance->save();
     }
 
