@@ -42,4 +42,14 @@ class WPstyle
             $this->media
         );
     }
+
+    public function dequeue()
+    {
+        wp_dequeue_style($this->handle);
+    }
+    
+    public function deregister()
+    {
+        wp_deregister_style($this->handle);
+    }
 }
