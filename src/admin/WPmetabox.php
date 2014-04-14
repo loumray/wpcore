@@ -108,7 +108,7 @@ class WPmetabox extends WPaction
         
         if (isset($_POST[$this->mbId])) {
             foreach ($_POST[$this->mbId] as $key => $value) {
-                $instance->set($key, sanitize_text_field($value));
+                $instance->set($key, $value);
             }
         }
 
