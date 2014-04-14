@@ -162,7 +162,11 @@ abstract class WPthemeCustomizer extends WPaction
 
     public function getMod($modId, $default = null)
     {
-        return get_theme_mod($this->prefix.$modId, $default);
+        $mod = get_theme_mod($this->prefix.$modId, $default);
+        if (!empty($mod)) {
+            return $mod;
+        }
+        return $default;
     }
 
     /**
