@@ -67,6 +67,11 @@ class WPmetabox extends WPaction
         }
     }
 
+    public function getId()
+    {
+        return $this->mbId;
+    }
+    
     public function getNonceAction()
     {
         return $this->nonceAction;
@@ -79,6 +84,13 @@ class WPmetabox extends WPaction
     public function setFieldSet(FieldSetInterface $fieldset)
     {
         $this->fieldSet = $fieldset;
+
+        return $this;
+    }
+
+    public function getFieldSet()
+    {
+        return $this->fieldSet;
     }
 
     public function action()
