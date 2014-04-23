@@ -55,7 +55,7 @@ abstract class WPthemeCustomizer extends WPaction
         add_action('customize_preview_init', array($this , 'loadScript'));
         add_action('customize_save_after', array($this , 'save'));
         add_action('customize_controls_enqueue_scripts', array($this, 'enqueueAssets'));
-        add_action('customize_register', array($this, 'customizeDefault'));
+        add_action('customize_register', array($this, 'customizeDefault'), 50);
         parent::register();
     }
 
