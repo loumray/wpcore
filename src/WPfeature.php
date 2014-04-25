@@ -64,6 +64,8 @@ abstract class WPfeature implements WPhook
         $this->hook($this->HThemeScript);
         $this->hook($this->HadminScript);
     }
+    
+    abstract public function init();
 
     public function getSlug()
     {
