@@ -10,15 +10,15 @@ class WPcustomPost implements WPpostSaveable
     protected $meta = array();
     protected $metaprefix = '';
 
-    public static function getInstance($id)
+    public static function getInstance($pid)
     {
-        $post = new self($id);
-        $post->setPost(\WP_Post::get_instance($id));
+        $post = new self($pid);
+        $post->setPost(\WP_Post::get_instance($pid));
         $post->fetch();
         return $post;
     }
 
-    static public function create($postId)
+    public static function create($postId)
     {
         return new self($postId);
     }
@@ -61,11 +61,11 @@ class WPcustomPost implements WPpostSaveable
 
     public function get($key, $default = null)
     {
-        if(isset($this->post->$key)) {
+        if (isset($this->post->$key)) {
             return $this->post->$key;
         }
         $key = $this->key($key);
-        if(isset($this->post->$key)) {
+        if (isset($this->post->$key)) {
             return $this->post->$key;
         }
 
@@ -91,7 +91,7 @@ class WPcustomPost implements WPpostSaveable
         foreach ($this->meta as $key => $value) {
             if (is_array($value) && count($value) === 1) {
                 $this->meta[$key] = $value[0];
-            } 
+            }
         }
         return true;
     }
@@ -99,7 +99,7 @@ class WPcustomPost implements WPpostSaveable
     public function save()
     {
         $changed = true;
-        foreach($this->meta as $key => $value) {
+        foreach ($this->meta as $key => $value) {
             $key = $this->key($key);
             $changed = update_post_meta($this->postId, $key, $value) || $changed;
         }
