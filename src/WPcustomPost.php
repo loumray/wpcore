@@ -59,18 +59,24 @@ class WPcustomPost implements WPpostSaveable
         return $this->meta;
     }
 
+    /**
+    *
+    * Note: actually meta value with prefixed key is return over native non prefixed metakey
+    */
     public function get($key, $default = null)
     {
-        if (isset($this->post->$key)) {
-            return $this->post->$key;
-        }
-        $key = $this->key($key);
-        if (isset($this->post->$key)) {
-            return $this->post->$key;
+        $metakey = $this->key($key);
+        if (isset($this->meta[$metakey])) {
+            return $this->meta[$metakey];
         }
 
-        if (isset($this->meta[$key])) {
-            return $this->meta[$key];
+        if (isset($this->post->$metakey)) {
+            return $this->post->$metakey;
+        }
+
+        //if prefixed meta data is not present return meta value of non prefixed metakey
+        if (isset($this->post->$key)) {
+            return $this->post->$key;
         }
         return $default;
     }
