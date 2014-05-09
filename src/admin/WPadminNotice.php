@@ -15,33 +15,43 @@ use WPCore\WPaction;
 
 class WPadminNotice extends WPaction
 {
-    protected $errormsg;
+    protected $msg;
+    protected $classtype;
     protected $view;
 
-    public function __construct(View $view, $errormsg)
+    public function __construct($msg, $classtype = 'message error')
     {
         parent::__construct('admin_notices');
 
-        $this->errormsg = $errormsg;
+        $this->msg       = $msg;
+        $this->classtype = $classtype;
+    }
+
+    public function setView(\View $view)
+    {
         $this->view = $view;
+
+        return $this;
     }
 
     public function action()
     {
-        if (!empty($this->errormsg)) {
-            $current_user = wp_get_current_user();
-            if (isset($current_user->data->wp_capabilities['administrator'] ) ||
-                in_array("administrator", $current_user->roles)) {
-                if (is_array($this->errormsg)) {
-                    foreach ($this->errormsg as $errormsg) {
-                        $this->view->setData(array('errormsg' => $errormsg));
-                        $this->view->show();
-                    }
-                } else {
-                    $this->view->setData(array('errormsg' => $this->errormsg));
-                    $this->view->show();
-                }
+        $current_user = wp_get_current_user();
+        if (isset($current_user->data->wp_capabilities['administrator'] ) ||
+            in_array("administrator", $current_user->roles)
+        ) {
+            if (!empty($this->view)) {
+                $this->view->show();
+            } else {
+                $this->defaultDisplay();
             }
         }
+    }
+
+    public function defaultDisplay()
+    {
+        ?>
+        <div class="<?php echo $this->classtype; ?>"><?php echo $this->msg; ?></div>
+        <?php
     }
 }
