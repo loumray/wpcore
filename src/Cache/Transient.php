@@ -21,12 +21,12 @@ class Transient
     protected $value;
     protected $expiration;  //in seconds, 0 = never expires
 
-    public function __construct($prefix, $params = "", $expInSeconds = 0)
+    public function __construct($name, $expInSeconds = 0, $params = "")
     {
         if (empty($params)) {
-            $this->setName($prefix);
+            $this->setName($name);
         } else {
-            $this->setName($this->createKey($prefix, $params));
+            $this->setName($this->createKey($name, $params));
         }
         $this->expiration = $expInSeconds;
     }
@@ -40,7 +40,7 @@ class Transient
     {
         $this->value = $value;
 
-        return set_site_transient($this->name, $this->value, $this->expiration);
+        return set_transient($this->name, $this->value, $this->expiration);
     }
 
     /**
@@ -50,14 +50,14 @@ class Transient
      */
     public function get()
     {
-        $this->value = get_site_transient($this->name);
+        $this->value = get_transient($this->name);
 
         return $this->value;
     }
 
     public function delete()
     {
-        return delete_site_transient($this->name);
+        return delete_transient($this->name);
     }
 
     /**
