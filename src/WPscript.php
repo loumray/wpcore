@@ -35,6 +35,17 @@ class WPscript
 
     public function enqueue()
     {
+        if (defined('SCRIPT_DEBUG') &&
+            SCRIPT_DEBUG !== false
+        ) {
+            if (!empty($this->src)) {
+                $nonminUrl = str_replace(".min.js", ".js", $this->src);
+                if (@fopen($nonminUrl, "r") !== false) {
+                    $this->src = $nonminUrl;
+                }
+
+            }
+        }
         wp_enqueue_script(
             $this->handle,
             $this->src,
