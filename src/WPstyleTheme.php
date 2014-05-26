@@ -21,9 +21,9 @@ class WPstyleTheme extends WPstyle
     protected $allowOverride = false;
     protected $overrideDir = 'assets/css/';
 
-    public function __construct($loadCondition, $handle, $src = "", $deps = array(), $ver = false, $media = 'all', $allowOverride = false)
+    public function __construct($loadCondition, $handle, $src = "", $debugsrc = "", $deps = array(), $ver = false, $media = 'all', $allowOverride = false)
     {
-        parent::__construct($handle, $src, $deps, $ver, $media);
+        parent::__construct($handle, $src, $debugsrc, $deps, $ver, $media);
 
         $this->loadCondition = $loadCondition;
         $this->allowOverride = $allowOverride;

@@ -19,32 +19,30 @@ namespace WPCore;
 class WPscript
 {
     protected $handle;
-    protected $src       = "";
-    protected $deps      = array();
-    protected $ver       = false;
-    protected $inFooter  = true;
+    protected $src      = "";
+    protected $debugsrc = "";
+    protected $deps     = array();
+    protected $ver      = false;
+    protected $inFooter = true;
 
-    public function __construct($handle, $src = false, $deps = array(), $ver = false, $inFooter = true)
+    public function __construct($handle, $src = false, $debugsrc = false, $deps = array(), $ver = false, $inFooter = true)
     {
-        $this->handle    = $handle;
-        $this->src       = $src;
-        $this->deps      = $deps;
-        $this->ver       = $ver;
+        $this->handle   = $handle;
+        $this->src      = $src;
+        $this->debugsrc = $debugsrc;
+        $this->deps     = $deps;
+        $this->ver      = $ver;
         $this->inFooter = $inFooter;
     }
+
 
     public function enqueue()
     {
         if (defined('SCRIPT_DEBUG') &&
-            SCRIPT_DEBUG !== false
+            SCRIPT_DEBUG !== false &&
+            !empty($this->debugsrc)
         ) {
-            if (!empty($this->src)) {
-                $nonminUrl = str_replace(".min.js", ".js", $this->src);
-                if (@fopen($nonminUrl, "r") !== false) {
-                    $this->src = $nonminUrl;
-                }
-
-            }
+            $this->src = $this->debugsrc;
         }
         wp_enqueue_script(
             $this->handle,

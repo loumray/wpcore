@@ -19,9 +19,9 @@ class WPscriptAdmin extends WPscript
 {
     protected $admin_page = array();
 
-    public function __construct($admin_page, $handle, $src = false, $deps = array(), $ver = false, $in_footer = true)
+    public function __construct($admin_page, $handle, $src = false, $debugsrc = false, $deps = array(), $ver = false, $in_footer = true)
     {
-        parent::__construct($handle, $src, $deps, $ver, $in_footer);
+        parent::__construct($handle, $src, $debugsrc, $deps, $ver, $in_footer);
 
         if (!is_array($admin_page)) {
             $admin_page[] = $admin_page;

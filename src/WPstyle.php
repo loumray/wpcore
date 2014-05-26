@@ -19,14 +19,16 @@ class WPstyle
 {
     protected $handle;
     protected $src       = "";
+    protected $debugsrc  = "";
     protected $deps      = array();
     protected $ver       = false;
     protected $media     = 'all';
 
-    public function __construct($handle, $src = "", $deps = array(), $ver = false, $media = 'all')
+    public function __construct($handle, $src = "", $debugsrc = "", $deps = array(), $ver = false, $media = 'all')
     {
         $this->handle = $handle;
         $this->src    = $src;
+        $this->debugsrc = $debugsrc;
         $this->deps   = $deps;
         $this->ver    = $ver;
         $this->media  = $media;
@@ -35,15 +37,10 @@ class WPstyle
     public function enqueue()
     {
         if (defined('SCRIPT_DEBUG') &&
-            SCRIPT_DEBUG !== false
+            SCRIPT_DEBUG !== false &&
+            !empty($this->debugsrc)
         ) {
-            if (!empty($this->src)) {
-                $nonminUrl = str_replace(".min.css", ".css", $this->src);
-                if (@fopen($nonminUrl, "r") !== false) {
-                    $this->src = $nonminUrl;
-                }
-
-            }
+            $this->src = $this->debugsrc;
         }
         wp_enqueue_style(
             $this->handle,

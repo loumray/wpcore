@@ -19,9 +19,9 @@ class WPstyleAdmin extends WPstyle
 {
     protected $admin_page = array();
 
-    public function __construct($admin_page, $handle, $src = "", $deps = array(), $ver = false, $media = 'all')
+    public function __construct($admin_page, $handle, $src = "", $debugsrc = "", $deps = array(), $ver = false, $media = 'all')
     {
-        parent::__construct($handle, $src, $deps, $ver, $media);
+        parent::__construct($handle, $src, $debugsrc, $deps, $ver, $media);
 
         if (!is_array($admin_page)) {
             $this->admin_page[] = $admin_page;
