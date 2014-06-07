@@ -19,9 +19,17 @@ class WPscriptTheme extends WPscript
 {
     protected $loadCondition = true;
 
-    public function __construct($loadCondition, $handle, $src = false, $debugsrc = false, $deps = array(), $ver = false, $in_footer = true)
-    {
-        parent::__construct($handle, $src, $debugsrc, $deps, $ver, $in_footer);
+    public function __construct(
+        $loadCondition,
+        $handle,
+        $src = false,
+        $debugsrc = false,
+        $deps = array(),
+        $ver = false,
+        $in_footer = true,
+        $force = false
+    ) {
+        parent::__construct($handle, $src, $debugsrc, $deps, $ver, $in_footer, $force);
 
         $this->loadCondition = $loadCondition;
     }

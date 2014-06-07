@@ -24,15 +24,24 @@ class WPscript
     protected $deps     = array();
     protected $ver      = false;
     protected $inFooter = true;
+    protected $forceSource = false;
 
-    public function __construct($handle, $src = false, $debugsrc = false, $deps = array(), $ver = false, $inFooter = true)
-    {
+    public function __construct(
+        $handle,
+        $src = false,
+        $debugsrc = false,
+        $deps = array(),
+        $ver = false,
+        $inFooter = true,
+        $forceSource = false
+    ) {
         $this->handle   = $handle;
         $this->src      = $src;
         $this->debugsrc = $debugsrc;
         $this->deps     = $deps;
         $this->ver      = $ver;
         $this->inFooter = $inFooter;
+        $this->forceSource = $forceSource;
     }
 
 
@@ -44,6 +53,11 @@ class WPscript
         ) {
             $this->src = $this->debugsrc;
         }
+
+        if ($this->forceSource === true) {
+            $this->deregister();
+        }
+        
         wp_enqueue_script(
             $this->handle,
             $this->src,
@@ -69,6 +83,10 @@ class WPscript
         );
     }
 
+    public function deregister()
+    {
+        wp_deregister_script($this->handle);
+    }
     /**
      * Gets the value of handle.
      *
