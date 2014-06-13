@@ -44,6 +44,15 @@ class WPscript
         $this->forceSource = $forceSource;
     }
 
+    public function fetch()
+    {
+        global $wp_scripts;
+        if (!empty($wp_scripts->registered[$this->handle])) {
+            $this->src = $wp_scripts->registered[$this->handle]->src;
+            $this->deps = $wp_scripts->registered[$this->handle]->deps;
+            $this->ver = $wp_scripts->registered[$this->handle]->ver;
+        }
+    }
 
     public function enqueue()
     {
@@ -74,6 +83,12 @@ class WPscript
 
     public function register()
     {
+        if (defined('SCRIPT_DEBUG') &&
+            SCRIPT_DEBUG !== false &&
+            !empty($this->debugsrc)
+        ) {
+            $this->src = $this->debugsrc;
+        }
         wp_register_script(
             $this->handle,
             $this->src,
