@@ -24,6 +24,7 @@ class View
     protected $allowOverride = false;
     protected $overrideName = '';
     protected $overrideDir = '';
+    protected $fallbackFilePath = '';
 
     public function __construct($file, $data = array())
     {
@@ -36,6 +37,11 @@ class View
     {
         $this->data = $data;
         return $this;
+    }
+    public function setFallbackFilePath($fallbackFilePath)
+    {
+        $this->fallbackFilePath = $fallbackFilePath;
+        return $fallbackFilePath;
     }
 
     public function getContent()
@@ -81,6 +87,11 @@ class View
             extract($this->data);
             include($this->file);
             return true;
+        } elseif (!empty($this->fallbackFilePath) &&
+            $this->file != $this->fallbackFilePath
+        ) {
+            $this->file = $this->fallbackFilePath;
+            $this->show();
         } else {
             throw new \Exception("File not found on ".$this->file);
         }
