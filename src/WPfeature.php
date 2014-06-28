@@ -216,7 +216,7 @@ abstract class WPfeature implements WPhook
         if (!empty($this->baseRelurl)) {
             return $this->baseRelurl;
         }
-        return $this->baseRelurl = str_replace(get_bloginfo('url'),'',$this->getBaseUrl());
+        return $this->baseRelurl = str_replace(get_bloginfo('url'), '', $this->getBaseUrl());
     }
     /**
      * Get the theme assets url
@@ -241,9 +241,11 @@ abstract class WPfeature implements WPhook
     public function getCssUrl($end = '')
     {
         if (!empty($this->css_url)) {
-            return $this->css_url;
+            return $this->css_url.$end;
         }
-        return $this->css_url = $this->getBaseUrl().'/'.$this->asset_path.$this->css_path.$end;
+
+        $this->css_url = $this->getBaseUrl().'/'.$this->asset_path.$this->css_path;
+        return $this->css_url.$end;
     }
     /**
      * Get the theme js url
@@ -251,9 +253,10 @@ abstract class WPfeature implements WPhook
     public function getJsUrl($end = '')
     {
         if (!empty($this->js_url)) {
-            return $this->js_url;
+            return $this->js_url.$end;
         }
-        return $this->js_url = $this->getBaseUrl().'/'.$this->asset_path.$this->js_path.$end;
+        $this->js_url = $this->getBaseUrl().'/'.$this->asset_path.$this->js_path;
+        return $this->js_url.$end;
     }
 
     /**
@@ -264,7 +267,8 @@ abstract class WPfeature implements WPhook
         if (!empty($this->img_url)) {
             return $this->img_url;
         }
-        return $this->img_url = $this->getBaseUrl().'/'.$this->asset_path.$this->img_path.$end;
+        $this->img_url = $this->getBaseUrl().'/'.$this->asset_path.$this->img_path;
+        return $this->img_url.$end;
     }
 
     /**
