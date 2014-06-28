@@ -60,9 +60,9 @@ abstract class WPfeature implements WPhook
         $this->setBasePath(get_template_directory());
 
         $this->HThemeScript = new ThemeScript();
-        $this->HadminScript = new AdminScript();
+        $this->HAdminScript = new AdminScript();
         $this->hook($this->HThemeScript);
-        $this->hook($this->HadminScript);
+        $this->hook($this->HAdminScript);
     }
     
     abstract public function init();
@@ -114,7 +114,7 @@ abstract class WPfeature implements WPhook
         if ($script instanceof WPscriptTheme) {
             $this->HThemeScript->addScript($script);
         } elseif ($script instanceof WPscriptAdmin) {
-            $this->HadminScript->addScript($script);
+            $this->HAdminScript->addScript($script);
         }
     }
 
@@ -123,7 +123,7 @@ abstract class WPfeature implements WPhook
         if ($style instanceof WPstyleTheme) {
             $this->HThemeScript->addStyle($style);
         } elseif ($style instanceof WPstyleAdmin) {
-            $this->HadminScript->addStyle($style);
+            $this->HAdminScript->addStyle($style);
         }
     }
 
@@ -140,6 +140,7 @@ abstract class WPfeature implements WPhook
 
     public function setBasePath($basePath)
     {
+        $basePath = str_replace('\\', '/', $basePath);
         $this->base_path = rtrim($basePath, '/');
     }
 
