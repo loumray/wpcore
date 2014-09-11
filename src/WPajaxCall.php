@@ -25,6 +25,7 @@ abstract class WPajaxCall implements WPhook
     protected $nonceSlug;
     protected $disableNonceCheck;
 
+    protected $nonceQueryVar = 'security';
     protected $currentUser;
 
     protected $formData = array();
@@ -43,7 +44,7 @@ abstract class WPajaxCall implements WPhook
         $this->mustBeLoggedIn = $mustBeLoggedIn || $admin;
         $this->disableNonceCheck = $disableNonceCheck;
 
-        $this->jsvar = $this->slug.'_params';
+        $this->jsvar = str_replace('-', '_', $this->slug).'_params';
         $this->nonceSlug = $nonceSlug;
         if (empty($this->nonceSlug)) {
             $this->nonceSlug = $this->slug.'-action';
@@ -97,7 +98,7 @@ abstract class WPajaxCall implements WPhook
     protected function verify()
     {
         if($this->disableNonceCheck !== true) {
-            check_ajax_referer($this->nonceSlug, 'security');
+            check_ajax_referer($this->nonceSlug, $this->nonceQueryVar);
         }
 
         if ($this->mustBeLoggedIn === true) {
