@@ -46,8 +46,12 @@ class WPpluginLoader extends ClassLoader
         $supplierstochange = array();
         foreach ($namespaces as $namespace => $path) {
             $supplier = stristr($namespace, '\\', true);
+            
             if (empty($supplier)) {
                 $supplier = $namespace;
+            }
+            if ($supplier == $newRootNamespace) {
+                continue;
             }
             if (!isset($supplierstochange[$supplier])) {
                 $supplierstochange[$supplier] = $newRootNamespace.'\\'.$supplier;
