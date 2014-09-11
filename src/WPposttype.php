@@ -54,6 +54,11 @@ class WPposttype extends WPaction
         return $this->slug;
     }
 
+    public function getAdminUrl()
+    {
+        return admin_url('edit.php?post_type='.$this->slug);
+    }
+
     public function getLoop($args = array())
     {
         $defaults = array(
