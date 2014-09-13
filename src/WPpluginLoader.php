@@ -77,7 +77,9 @@ class WPpluginLoader extends ClassLoader
                 foreach ($supplierstochange as $supplier => $new) {
                     $file_contents = str_replace(" $supplier\\", " $new\\", $file_contents);
                     $file_contents = str_replace("\"$supplier\\", "\"$new\\", $file_contents);
+                    $file_contents = str_replace("\"\\$supplier\\", "\"\\$new\\", $file_contents);
                     $file_contents = str_replace("'$supplier\\", "'$new\\", $file_contents);
+                    $file_contents = str_replace("'\\$supplier\\", "'\\$new\\", $file_contents);
                     $file_contents = str_replace(" $supplier;", " $new;", $file_contents);
                 }
 
@@ -115,7 +117,9 @@ class WPpluginLoader extends ClassLoader
                 foreach ($namespacesToUnwrap as $unwrapNamespace) {
                     $file_contents = str_replace(" $unwrapNamespace\\", " ", $file_contents);
                     $file_contents = str_replace("\"$unwrapNamespace\\", "\"", $file_contents);
+                    $file_contents = str_replace("\"\\$unwrapNamespace\\", "\"\\", $file_contents);
                     $file_contents = str_replace("'$unwrapNamespace\\", "'", $file_contents);
+                    $file_contents = str_replace("'\\$unwrapNamespace\\", "'\\", $file_contents);
                 }
 
                 $itemFile = new \SplFileObject($item->getPathName(), "w");
@@ -283,7 +287,7 @@ class WPpluginLoader extends ClassLoader
         // PSR-4 lookup
         $logicalPathPsr4 = strtr($class, '\\', DIRECTORY_SEPARATOR) . '.php';
         // WP PSR-4 lookup
-        $logicalPathPsr4WP = substr(stristr($logicalPathPsr4, "/"), 1);
+        $logicalPathPsr4WP = substr(stristr($logicalPathPsr4, DIRECTORY_SEPARATOR), 1);
 
         $first = $class[0];
         if (isset($this->prefixLengthsPsr4[$first])) {
@@ -320,7 +324,7 @@ class WPpluginLoader extends ClassLoader
             $logicalPathPsr0 = strtr($class, '_', DIRECTORY_SEPARATOR) . '.php';
         }
         // WP PSR-0 lookup
-        $logicalPathPsr0WP = substr(stristr($logicalPathPsr0, "/"), 1);
+        $logicalPathPsr0WP = substr(stristr($logicalPathPsr0, DIRECTORY_SEPARATOR), 1);
 
         if (isset($this->prefixesPsr0[$first])) {
             foreach ($this->prefixesPsr0[$first] as $prefix => $dirs) {
