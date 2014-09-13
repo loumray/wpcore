@@ -62,7 +62,6 @@ abstract class WPplugin extends WPfeature
         }
 
         if (!is_null($this->mainFeature)) {
-            $this->mainFeature->init();
             $this->hook($this->mainFeature);
         }
     }
