@@ -19,8 +19,8 @@ use WPCore\WPscriptAdmin;
  */
 class WPscriptFeaturePointer extends WPscriptAdmin
 {
-    public function __construct($handle, $src)
+    public function __construct($handle, $src, $srcmin)
     {
-        parent::__construct(array(), $handle, $src, array('jquery','wp-pointer'), false, true);
+        parent::__construct(array(), $handle, $src, $srcmin, array('jquery','wp-pointer'), false, true);
     }
 }

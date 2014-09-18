@@ -30,7 +30,7 @@ class WPfeaturePointerLoader extends WPaction
         parent::__construct('admin_enqueue_scripts', 500);
 
         $this->pointersJsVar = $pointersJsVar;
-        $this->script = new WPscriptFeaturePointer('installPointer'.$this->pointersJsVar, $jsBaseUrl.'installPointer.js');
+        $this->script = new WPscriptFeaturePointer('installPointer'.$this->pointersJsVar, $jsBaseUrl.'installPointer.js', $jsBaseUrl.'installPointer.min.js');
         
         $this->pointers =  array();
     }
