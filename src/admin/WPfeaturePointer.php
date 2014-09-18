@@ -75,13 +75,17 @@ class WPfeaturePointer
 
     public function isDisplayable($currentScreenId, $userId)
     {
-        if ((empty($this->screenId) || ($this->screenId === $currentScreenId)) &&
-            (!$this->isDismissed($userId))) {
+        if ((empty($this->screenId) ||
+                (is_array($this->screenId) && in_array($currentScreenId, $this->screenId)) ||
+                $this->screenId === $currentScreenId) &&
+            !$this->isDismissed($userId)
+        ) {
             return true;
         }
 
         return false;
     }
+    
     public function toArray()
     {
         return array(
