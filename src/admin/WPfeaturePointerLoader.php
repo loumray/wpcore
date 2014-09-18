@@ -24,14 +24,14 @@ class WPfeaturePointerLoader extends WPaction
     protected $script;
     protected $pointers;
     protected $pointersJsVar;
-    
+
     public function __construct($jsBaseUrl, $pointersJsVar)
     {
         parent::__construct('admin_enqueue_scripts', 500);
 
         $this->pointersJsVar = $pointersJsVar;
-        $this->script = new WPscriptFeaturePointer('installPointer'.$this->pointersJsVar, $jsBaseUrl.'installPointer.js', $jsBaseUrl.'installPointer.min.js');
-        
+        $this->script = new WPscriptFeaturePointer('installPointer'.$this->pointersJsVar, $jsBaseUrl.'installPointer.min.js', $jsBaseUrl.'installPointer.js');
+
         $this->pointers =  array();
     }
 
@@ -51,7 +51,7 @@ class WPfeaturePointerLoader extends WPaction
         $params = array(
             'pointers' => array()
         );
-        
+
         $currentScreenId = get_current_screen();
         $currentScreenId = $currentScreenId->id;
         $userId = get_current_user_id();
