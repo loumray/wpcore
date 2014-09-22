@@ -56,7 +56,7 @@ abstract class WPplugin extends WPfeature
                     $errormsg[] = $this->reqPHPMsg; //sprintf(__(__('%s Requirements failed. PHP version must at least %s', 'loumray-plugin-starter')), $this->getName(), $this->reqPHPVersion);
                 }
             }
-            $this->hook(new WPadminNotice(new View($this->getViewsPath().'admin/AdminNotice.php'), $errormsg));
+            $this->hook(new WPadminNotice($errormsg));
 
             return;
         }

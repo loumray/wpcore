@@ -50,8 +50,16 @@ class WPadminNotice extends WPaction
 
     public function defaultDisplay()
     {
-        ?>
-        <div class="<?php echo $this->classtype; ?>"><?php echo $this->msg; ?></div>
-        <?php
+        $notices = array();
+        if (!is_array($this->msg)) {
+            $notices[] = $this->msg;
+        } else {
+            $notices = $this->msg;
+        }
+        foreach ($notices as $msg) {
+            ?>
+            <div class="<?php echo $this->classtype; ?>"><p><?php echo $msg; ?></p></div>
+            <?php
+        }
     }
 }
