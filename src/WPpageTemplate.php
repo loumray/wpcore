@@ -73,6 +73,10 @@ class WPpageTemplate extends WPaction
     {
         global $post;
 
+        if (is_null($post)) {
+            return $template;
+        }
+        
         $pagetemplate = get_post_meta($post->ID, '_wp_page_template', true);
 
         if ($pagetemplate != basename($this->path)) {
