@@ -97,7 +97,7 @@ abstract class WPajaxCall implements WPhook
      */
     protected function verify()
     {
-        if($this->disableNonceCheck !== true) {
+        if ($this->disableNonceCheck !== true) {
             check_ajax_referer($this->nonceSlug, $this->nonceQueryVar);
         }
 
@@ -121,23 +121,23 @@ abstract class WPajaxCall implements WPhook
     public function register()
     {
         if ($this->admin === true) {
-            add_action('admin_enqueue_scripts', array($this,'init'), 10000);
+            add_action('admin_enqueue_scripts', array($this, 'init'), 10000);
         } else {
-            add_action('wp_enqueue_scripts', array($this,'init'), 10000);
+            add_action('wp_enqueue_scripts', array($this, 'init'), 10000);
         }
-        add_action('wp_ajax_'.$this->slug, array($this,'safeCallback'));
+        add_action('wp_ajax_'.$this->slug, array($this, 'safeCallback'));
 
         if (!$this->mustBeLoggedIn) {
-            add_action('wp_ajax_nopriv_'.$this->slug, array($this,'safeCallback'));
+            add_action('wp_ajax_nopriv_'.$this->slug, array($this, 'safeCallback'));
         }
     }
 
     public function remove()
     {
         if ($this->admin === true) {
-            remove_action('admin_enqueue_scripts', array($this,'init'));
+            remove_action('admin_enqueue_scripts', array($this, 'init'));
         } else {
-            remove_action('wp_enqueue_scripts', array($this,'init'));
+            remove_action('wp_enqueue_scripts', array($this, 'init'));
         }
 
         remove_action('wp_ajax_'.$this->slug, array($this, 'safeCallback'));
