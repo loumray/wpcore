@@ -37,6 +37,14 @@ class WPtaxonomy extends WPaction
     public function action()
     {
         register_taxonomy($this->slug, $this->type, $this->args);
+
+        //As per WP doc: https://codex.wordpress.org/Function_Reference/register_taxonomy
+        // Better be safe than sorry when registering custom taxonomies for
+        // custom post types. Use register_taxonomy_for_object_type() right
+        // after the function to interconnect them. Else you could run into
+        // minetraps where the post type isn't attached inside filter callback
+        // that run during parse_request or pre_get_posts.
+        register_taxonomy_for_object_type($this->slug, $this->type);
     }
 
     public function getSlug()
