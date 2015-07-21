@@ -33,12 +33,13 @@ class WPshortcode extends WPaction
         add_shortcode($this->slug, array($this, 'callback'));
     }
 
-    public function callback()
+    public function callback($atts)
     {
         if (is_null($this->view)) {
             return '';
         }
         
+        $this->view->appendData(array('shortcodeAtts' => $atts));
         return $this->view->getContent();
     }
 }
