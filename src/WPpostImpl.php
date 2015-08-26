@@ -40,6 +40,7 @@ trait WPpostImpl
     public function setPost(\WP_Post $post)
     {
         $this->post = $post;
+        $this->postId = $post->ID;
         return $this;
     }
 
