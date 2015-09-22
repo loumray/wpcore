@@ -27,7 +27,7 @@ class WPadminNotice extends WPaction
         $this->classtype = $classtype;
     }
 
-    public function setView(\View $view)
+    public function setView(View $view)
     {
         $this->view = $view;
 
