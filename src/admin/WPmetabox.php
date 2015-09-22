@@ -36,6 +36,7 @@ class WPmetabox extends WPaction
 
     protected $saveableClass;
     protected $fieldSet;
+    protected $pageTemplates = array();
 
     public function __construct(
         $mbId,
@@ -88,6 +89,13 @@ class WPmetabox extends WPaction
         return $this;
     }
 
+    public function addPageTemplate($templateSlug)
+    {
+        $this->pageTemplates[] = $templateSlug;
+
+        return $this;
+    }
+
     public function getFieldSet()
     {
         return $this->fieldSet;
@@ -95,10 +103,22 @@ class WPmetabox extends WPaction
 
     public function action()
     {
+        if (!empty($this->pageTemplates)) {
+            global $post;
+
+            if (!empty($post)) {
+                $currentTemplate = get_post_meta($post->ID, '_wp_page_template', true);
+
+                if (!in_array($currentTemplate, $this->pageTemplates)) {
+                    return false;
+                }
+            }
+        }
+
         add_meta_box(
             $this->mbId,
             $this->title,
-            array( $this, 'view' ),
+            array($this, 'view'),
             $this->postType,
             $this->context,
             $this->priority,

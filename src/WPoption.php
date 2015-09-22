@@ -20,12 +20,14 @@ class WPoption
 {
     protected $name;
     protected $value;
+    protected $default;
     protected $autoload = true;
     protected $fetched  = false;
 
-    public function __construct($optionName)
+    public function __construct($optionName, $default = false)
     {
-        $this->name = $optionName;
+        $this->name    = $optionName;
+        $this->default = $default;
     }
 
     public function getAutoload()
@@ -58,7 +60,7 @@ class WPoption
 
     public function fetch()
     {
-        $this->value = get_option($this->name);
+        $this->value = get_option($this->name, $this->default);
         $this->fetched = true;
     }
     /*

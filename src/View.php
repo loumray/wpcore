@@ -38,6 +38,16 @@ class View
         $this->data = $data;
         return $this;
     }
+
+    public function appendData($data)
+    {
+        foreach ($data as $index => $value) {
+            $this->data[$index] = $value;
+        }
+        
+        return $this;
+    }
+
     public function setFallbackFilePath($fallbackFilePath)
     {
         $this->fallbackFilePath = $fallbackFilePath;
@@ -62,6 +72,7 @@ class View
         }
         return $this;
     }
+    
     public function setOverrideDir($subDir)
     {
         $this->overrideDir = $subDir.'/';
