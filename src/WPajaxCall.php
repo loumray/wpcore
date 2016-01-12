@@ -89,6 +89,10 @@ abstract class WPajaxCall implements WPhook
 
     public function init()
     {
+        $params = $this->getScriptParams();
+        if (empty($params)) {
+            return;
+        }
         wp_localize_script($this->jsHandle, $this->jsvar, $this->getScriptParams());
     }
 
