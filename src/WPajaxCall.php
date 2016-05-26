@@ -60,6 +60,9 @@ abstract class WPajaxCall implements WPhook
         $data = array();
         if (!empty($_POST['data'])) {
             foreach ($_POST['data'] as $info) {
+                if (!isset($info['name'])) {
+                    continue;
+                }
                 $data[$info['name']] = $info['value'];
             }
         }
