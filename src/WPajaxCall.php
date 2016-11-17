@@ -96,7 +96,7 @@ abstract class WPajaxCall implements WPhook
         if (empty($params)) {
             return;
         }
-        wp_localize_script($this->jsHandle, $this->jsvar, $this->getScriptParams());
+        wp_localize_script($this->jsHandle, $this->jsvar, $params);
     }
 
     /*
@@ -110,8 +110,8 @@ abstract class WPajaxCall implements WPhook
                 header('HTTP/1.0 401 Unauthorized');
                 die('-1');
             }
-
         }
+
         if ($this->mustBeLoggedIn === true) {
             $this->setCurrentUser();
             if (0 == $this->currentUser->ID) {

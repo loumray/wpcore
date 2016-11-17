@@ -33,12 +33,15 @@ class WPpluginLoader extends ClassLoader
     private $useIncludePath = false;
     private $classMap = array();
 
-    public static function wrapPackage($installedPackage, $namespacesWrapper)
+    public static function wrapPackage($installedPackage, $namespacesWrapper, $vendorDir = '')
     {
-        $vendorDir = __DIR__.'/../../../';
+        if (empty($vendorDir)) {
+            $vendorDir = __DIR__.'/../../../';
+        }
 
-        $namespaces = require __DIR__.'/../../../composer/autoload_namespaces.php';
-        $namespacesPsr4 = require __DIR__.'/../../../composer/autoload_psr4.php';
+        $namespaces = require $vendorDir.'/composer/autoload_namespaces.php';
+        $namespacesPsr4 = require $vendorDir.'/composer/autoload_psr4.php';
+
         $namespaces = array_merge($namespaces, $namespacesPsr4);
         $newRootNamespace = $namespacesWrapper;
 
@@ -60,6 +63,7 @@ class WPpluginLoader extends ClassLoader
 
         $dir = $vendorDir.'/'.$installedPackage;
         $path = realpath($dir); // Path to your textfiles
+
         $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
         foreach ($fileList as $item) {
             if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
@@ -89,10 +93,12 @@ class WPpluginLoader extends ClassLoader
         }
     }
 
-    public static function unwrapPackage($package, $namespacesToUnwrap = array())
+    public static function unwrapPackage($package, $namespacesToUnwrap = array(), $vendorDir = '')
     {
         echo "unwrappingPackage $package".PHP_EOL;
-        $vendorDir = __DIR__.'/../../../';
+        if (empty($vendorDir)) {
+            $vendorDir = __DIR__.'/../../../';
+        }
 
         $dir = $vendorDir.'/'.$package;
         $path = realpath($dir); // Path to your textfiles
