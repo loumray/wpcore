@@ -93,7 +93,7 @@ abstract class WPajaxCall implements WPhook
         if (empty($params)) {
             return;
         }
-        wp_localize_script($this->jsHandle, $this->jsvar, $this->getScriptParams());
+        wp_localize_script($this->jsHandle, $this->jsvar, $params);
     }
 
     /*
@@ -102,9 +102,12 @@ abstract class WPajaxCall implements WPhook
     protected function verify()
     {
         if ($this->disableNonceCheck !== true) {
-            check_ajax_referer($this->nonceSlug, $this->nonceQueryVar);
+            $check = check_ajax_referer($this->nonceSlug, $this->nonceQueryVar, false);
+            if ($check === false) {
+                header('HTTP/1.0 401 Unauthorized');
+                die('-1');
+            }
         }
-
         if ($this->mustBeLoggedIn === true) {
             $this->setCurrentUser();
             if (0 == $this->currentUser->ID) {
