@@ -56,6 +56,23 @@ class WPstyle
         wp_dequeue_style($this->handle);
     }
     
+    public function register()
+    {
+        if (defined('SCRIPT_DEBUG') &&
+            SCRIPT_DEBUG !== false &&
+            !empty($this->debugsrc)
+        ) {
+            $this->src = $this->debugsrc;
+        }
+        wp_register_style(
+            $this->handle,
+            $this->src,
+            $this->deps,
+            $this->ver,
+            $this->media
+        );
+    }
+    
     public function deregister()
     {
         wp_deregister_style($this->handle);
