@@ -37,6 +37,8 @@ abstract class WPfeature implements WPhook
 
     private $views_path = 'views/';
 
+    private $isHooked = false;
+
     protected $scripts = array();
     protected $styles  = array();
 
@@ -130,12 +132,17 @@ abstract class WPfeature implements WPhook
     public function hook(WPhook $hook)
     {
         if ($hook instanceof WPfeature) {
-            $relPath = substr($hook->getBasePath(), strlen($this->getBasePath()));
-            $hook->setBaseUrl($this->getBaseUrl().$relPath);
+            //If Feature is already hooked by another, skip updating base url, so that same feature use same base url everywhere it is hooked
+            if (!$hook->isHooked) {
+                $relPath = substr($hook->getBasePath(), strlen($this->getBasePath()));
+                $hook->setBaseUrl($this->getBaseUrl().$relPath);
+            }
+
             $hook->init();
         }
 
         $this->hooks[] = $hook;
+        $hook->isHooked = true;
     }
 
     public function setBasePath($basePath)
