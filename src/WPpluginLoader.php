@@ -79,6 +79,9 @@ class WPpluginLoader extends ClassLoader
                     $file_contents.= $itemFile->fgets();
                 }
                 foreach ($supplierstochange as $supplier => $new) {
+                    //Added to handle sub namesapce want to access to root namespace
+                    $file_contents = str_replace(" \\$supplier\\", " \\$new\\", $file_contents);
+
                     $file_contents = str_replace(" $supplier\\", " $new\\", $file_contents);
                     $file_contents = str_replace("\"$supplier\\", "\"$new\\", $file_contents);
                     $file_contents = str_replace("\"\\$supplier\\", "\"\\$new\\", $file_contents);
@@ -121,6 +124,7 @@ class WPpluginLoader extends ClassLoader
                 }
 
                 foreach ($namespacesToUnwrap as $unwrapNamespace) {
+                    $file_contents = str_replace(" \\$unwrapNamespace\\", " \\", $file_contents);
                     $file_contents = str_replace(" $unwrapNamespace\\", " ", $file_contents);
                     $file_contents = str_replace("\"$unwrapNamespace\\", "\"", $file_contents);
                     $file_contents = str_replace("\"\\$unwrapNamespace\\", "\"\\", $file_contents);
@@ -363,5 +367,14 @@ class WPpluginLoader extends ClassLoader
 
         // Remember that this class does not exist.
         return $this->classMap[$class] = false;
+    }
+
+    public function composerRequire($fileIdentifier, $file)
+    {
+        if (empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
+            require $file;
+
+            $GLOBALS['__composer_autoload_files'][$fileIdentifier] = true;
+        }
     }
 }
