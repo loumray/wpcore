@@ -99,30 +99,63 @@ abstract class WPajaxCall implements WPhook
         wp_localize_script($this->jsHandle, $this->jsvar, $params);
     }
 
-    /*
-     * If logged in needed  sets current user or die if no user are logged
-     */
-    protected function verify()
+    protected function checkLoggedIn()
     {
+        if ($this->mustBeLoggedIn === true) {
+            $this->setCurrentUser();
+            if (0 == $this->currentUser->ID) {
+                header('HTTP/1.0 401 Unauthorized');
+                die('-1');
+            }
+        }
+    }
+
+    //Not continuing the tradition of misspelling referer vs referrer :)
+    protected function checkReferrer($nonceSlug = '', $nonceQueryVar = '')
+    {
+        if (empty($nonceSlug)) {
+            $nonceSlug = $this->nonceSlug;
+        }
+
+        if (empty($nonceQueryVar)) {
+            $nonceQueryVar = $this->nonceQueryVar;
+        }
+
         if ($this->disableNonceCheck !== true) {
-            $check = check_ajax_referer($this->nonceSlug, $this->nonceQueryVar, false);
+            $check = check_ajax_referer($nonceSlug, $nonceQueryVar, false);
             if ($check === false) {
                 header('HTTP/1.0 401 Unauthorized');
                 die('-1');
             }
         }
-
-        if ($this->mustBeLoggedIn === true) {
-            $this->setCurrentUser();
-            if (0 == $this->currentUser->ID) {
-                die();
-            }
-        }
+    }
+    /*
+     * If logged in needed  sets current user or die if no user are logged
+     */
+    protected function verify()
+    {
+        $this->checkReferrer();
+        $this->checkLoggedIn();
     }
 
     protected function setCurrentUser()
     {
         $this->currentUser = wp_get_current_user();
+    }
+
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
+        $this->mustBeLoggedIn = $this->mustBeLoggedIn || $admin;
+
+        return $this;
+    }
+
+    public function setMustBeLoggedin($mustBeLoggedIn)
+    {
+        $this->mustBeLoggedIn = $mustBeLoggedIn || $this->admin;
+
+        return $this;
     }
 
     /*
