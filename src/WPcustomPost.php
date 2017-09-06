@@ -45,6 +45,10 @@ class WPcustomPost implements WPpostSaveable
 
     public function getPost()
     {
+        if (is_null($this->post)) {
+            $this->setPost(\WP_Post::get_instance($this->postId));
+        }
+
         return $this->post;
     }
 
