@@ -33,109 +33,203 @@ class WPpluginLoader extends ClassLoader
     private $useIncludePath = false;
     private $classMap = array();
 
-    public static function wrapPackage($installedPackage, $namespacesWrapper, $vendorDir = '')
+    protected static function getDeps($installedPackages, $vendorDir)
     {
-        if (empty($vendorDir)) {
-            $vendorDir = __DIR__.'/../../../';
+        if (!class_exists(__NAMESPACE__.'\\Composer\\InstalledFile')) {
+            require __DIR__.'/Composer/InstalledFile.php';
         }
+        $installedFile = new Composer\InstalledFile($vendorDir.'/composer/installed.json');
 
-        $namespaces = require $vendorDir.'/composer/autoload_namespaces.php';
-        $namespacesPsr4 = require $vendorDir.'/composer/autoload_psr4.php';
-
-        $namespaces = array_merge($namespaces, $namespacesPsr4);
-        $newRootNamespace = $namespacesWrapper;
-
-        echo "----- wrapping package ".$installedPackage." into namespace $newRootNamespace -------". PHP_EOL;
-        $supplierstochange = array();
-        foreach ($namespaces as $namespace => $path) {
-            $supplier = stristr($namespace, '\\', true);
+        $deppackages = array();
+        $newRootNamespaces = array();
+        foreach ($installedPackages as $installedPackage => $newRootNamespace) {
+                $deppackages = array_merge($deppackages, $installedFile->getNamespaces($installedPackage));
+                
+                foreach ($deppackages as $deppackage => $src) {
+                    if (isset($newRootNamespaces[$deppackage])) {
+                        continue;   
+                    }
+                    $newRootNamespaces[$deppackage] = $newRootNamespace;
+                }
             
-            if (empty($supplier)) {
-                $supplier = $namespace;
-            }
-            if ($supplier == $newRootNamespace) {
-                continue;
-            }
-            if (!isset($supplierstochange[$supplier])) {
-                $supplierstochange[$supplier] = $newRootNamespace.'\\'.$supplier;
-            }
         }
+        $supplierstochange = array();
+        foreach ($deppackages as $deppackage => $autoloads) {
+            
+            $newRootNamespace = $newRootNamespaces[$deppackage];
+            // print($deppackage.' - '.$newRootNamespace.PHP_EOL);
+            // continue;
+            foreach ($autoloads as $namespace => $relDir) {
+                //Path of files to wrap
+                // $supplier = stristr($namespace, '\\', true);
 
-        $dir = $vendorDir.'/'.$installedPackage;
-        $path = realpath($dir); // Path to your textfiles
-
-        $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
-        foreach ($fileList as $item) {
-            if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
-                if (is_writable($item->getPathName()) === false) {
-                    echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
+                $supplier = trim($namespace, '\\');
+                if ($supplier == $newRootNamespace) {
                     continue;
                 }
+                $new = $newRootNamespace.'\\'.$supplier;
 
-                //TODO read and replace on the fly
-                $itemFile = new \SplFileObject($item->getPathName());
-                $file_contents = "";
-                while (!$itemFile->eof()) {
-                    $file_contents.= $itemFile->fgets();
-                }
-                foreach ($supplierstochange as $supplier => $new) {
-                    //Added to handle sub namesapce want to access to root namespace
-                    $file_contents = str_replace(" \\$supplier\\", " \\$new\\", $file_contents);
-
-                    $file_contents = str_replace(" $supplier\\", " $new\\", $file_contents);
-                    $file_contents = str_replace("\"$supplier\\", "\"$new\\", $file_contents);
-                    $file_contents = str_replace("\"\\$supplier\\", "\"\\$new\\", $file_contents);
-                    $file_contents = str_replace("'$supplier\\", "'$new\\", $file_contents);
-                    $file_contents = str_replace("'\\$supplier\\", "'\\$new\\", $file_contents);
-                    $file_contents = str_replace(" $supplier;", " $new;", $file_contents);
-                }
-
-                $itemFile = new \SplFileObject($item->getPathName(), "w");
-                $itemFile->fwrite($file_contents);
+                $supplierstochange[$supplier] = $new;
             }
         }
+        // print_r($supplierstochange);
+        //Prevent duplicate wrapping of same roots
+        foreach ($supplierstochange as $supplier => $new) {
+            $rootsupplier = stristr($supplier, '\\', true);
+            if (isset($supplierstochange[$rootsupplier])) {
+                unset($supplierstochange[$supplier]);
+            }
+        }
+
+        return array(
+            'deps' => $deppackages,
+            'wrap' => $supplierstochange,
+        );
     }
 
-    public static function unwrapPackage($package, $namespacesToUnwrap = array(), $vendorDir = '')
+    public static function wrapPackage($installedPackages, $vendorDir = '')
     {
-        echo "unwrappingPackage $package".PHP_EOL;
         if (empty($vendorDir)) {
             $vendorDir = __DIR__.'/../../../';
         }
 
-        $dir = $vendorDir.'/'.$package;
-        $path = realpath($dir); // Path to your textfiles
+        echo "----- wrapping packages -------". PHP_EOL;
+        //Make sure Composer Classes are loaded
+        
+        // $requires = $installedFile->getRequires($installedPackage);
+        // print_r($requires);
+        $supplierstochange = self::getDeps($installedPackages, $vendorDir);
+        $deppackages       = $supplierstochange['deps'];
+        $supplierstochange = $supplierstochange['wrap'];
 
-        $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \RecursiveIteratorIterator::SELF_FIRST);
-        foreach ($fileList as $item) {
-            if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
-                if (is_writable($item->getPathName()) === false) {
-                    echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
-                    continue;
+        //For all dependant packages replace
+        foreach ($deppackages as $deppackage => $autoloads) {
+            foreach ($autoloads as $namespace => $relDir) {
+                //Path of files to wrap
+                $wrappingPath = realpath($vendorDir.DIRECTORY_SEPARATOR.$deppackage.DIRECTORY_SEPARATOR.$relDir);
+
+                echo "----- wrapping package $deppackage -------".$deppackage.DIRECTORY_SEPARATOR.$relDir.PHP_EOL;
+                
+                // print($supplier.' to '.$new.PHP_EOL);
+                // print($wrappingPath.PHP_EOL);
+                $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wrappingPath), \RecursiveIteratorIterator::SELF_FIRST);
+                foreach ($fileList as $item) {
+                    if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
+                        if (is_writable($item->getPathName()) === false) {
+                            echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
+                            continue;
+                        }
+        
+                        //TODO read and replace on the fly
+                        $itemFile = new \SplFileObject($item->getPathName());
+                        $file_contents = "";
+                        while (!$itemFile->eof()) {
+                            $file_contents.= $itemFile->fgets();
+                        }
+
+                        //Make sure it was not wrapped already
+                        foreach ($supplierstochange as $supplier => $new) {
+                            if (empty($new)) {
+                                throw new \Exception('Trying to wrap to an empty namespace');
+                            }
+
+                            //Make sure it was not wrapped already
+                            if (strpos($file_contents, $new) !== false) {
+                                throw new \Exception('Double wrapping? file already contains namespace '.$new.' @'.$pos.' in '.$item->getPathName());
+                            }
+                        }
+
+                        foreach ($supplierstochange as $supplier => $new) {
+
+                            //Added to handle sub namesapce want to access to root namespace
+                            $file_contents = str_replace(" \\$supplier\\", " \\$new\\", $file_contents);
+        
+                            $file_contents = str_replace(" $supplier\\", " $new\\", $file_contents);
+                            $file_contents = str_replace("\"$supplier\\", "\"$new\\", $file_contents);
+                            $file_contents = str_replace("\"\\$supplier\\", "\"\\$new\\", $file_contents);
+                            $file_contents = str_replace("'$supplier\\", "'$new\\", $file_contents);
+                            $file_contents = str_replace("'\\$supplier\\", "'\\$new\\", $file_contents);
+                            $file_contents = str_replace(" $supplier;", " $new;", $file_contents);
+
+                            //remove unwanted replacements
+                            $file_contents = str_replace("as $new", "as $supplier", $file_contents);
+                        }
+
+                        $itemFile = new \SplFileObject($item->getPathName(), "w");
+                        $itemFile->fwrite($file_contents);
+                    }
                 }
-
-                echo "unwrapping file: ".$item->getFilename(). PHP_EOL;
-
-                //TODO read and replace on the fly
-                $itemFile = new \SplFileObject($item->getPathName());
-                $file_contents = "";
-                while (!$itemFile->eof()) {
-                    $file_contents.= $itemFile->fgets();
-                }
-
-                foreach ($namespacesToUnwrap as $unwrapNamespace) {
-                    $file_contents = str_replace(" \\$unwrapNamespace\\", " \\", $file_contents);
-                    $file_contents = str_replace(" $unwrapNamespace\\", " ", $file_contents);
-                    $file_contents = str_replace("\"$unwrapNamespace\\", "\"", $file_contents);
-                    $file_contents = str_replace("\"\\$unwrapNamespace\\", "\"\\", $file_contents);
-                    $file_contents = str_replace("'$unwrapNamespace\\", "'", $file_contents);
-                    $file_contents = str_replace("'\\$unwrapNamespace\\", "'\\", $file_contents);
-                }
-
-                $itemFile = new \SplFileObject($item->getPathName(), "w");
-                $itemFile->fwrite($file_contents);
             }
+        }
+        
+    }
 
+    public static function unwrapPackage($packages, $vendorDir = '')
+    {
+        echo "----- unwrapping packages -------". PHP_EOL;
+        if (empty($vendorDir)) {
+            $vendorDir = __DIR__.'/../../../';
+        }
+
+        $namespacesToUnwrap = self::getDeps($packages, $vendorDir);
+
+        $deppackages        = $namespacesToUnwrap['deps'];
+        $namespacesToUnwrap = array_flip($namespacesToUnwrap['wrap']);
+
+        $rootsToremove = array();
+        foreach ($namespacesToUnwrap as $wrapped => $namespace) {
+            $root = stristr($wrapped, '\\', true);
+            if (!in_array($root, $rootsToremove)) {
+                $rootsToremove[] = $root;
+            }
+        }
+
+        //Navigate through all packages dependancy
+        foreach ($deppackages as $deppackage => $autoloads) {
+            foreach ($autoloads as $namespace => $relDir) {
+                //Path of files to wrap
+                $wrappingPath = realpath($vendorDir.DIRECTORY_SEPARATOR.$deppackage.DIRECTORY_SEPARATOR.$relDir);
+                echo "----- unwrapping $deppackage -------".$deppackage.DIRECTORY_SEPARATOR.$relDir.PHP_EOL;
+
+                $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wrappingPath), \RecursiveIteratorIterator::SELF_FIRST);
+                foreach ($fileList as $item) {
+                    if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
+                        if (is_writable($item->getPathName()) === false) {
+                            echo "WPpluginLoader: unable to read/write file ".$item->getPathName(). PHP_EOL;
+                            continue;
+                        }
+
+                        //TODO read and replace on the fly
+                        $itemFile = new \SplFileObject($item->getPathName());
+                        $file_contents = "";
+                        while (!$itemFile->eof()) {
+                            $file_contents.= $itemFile->fgets();
+                        }
+
+                        //First replace full namespace
+                        foreach ($namespacesToUnwrap as $unwrapNamespace => $oldNamespace) {
+                            if (empty($unwrapNamespace)) {
+                                throw new \Exception('Trying to unwrap from empty namespace');
+                            }
+                            $file_contents = str_replace("$unwrapNamespace", "$oldNamespace", $file_contents);
+                        }
+
+                        //then remove root for to unwrap "broken" appearances of namespace
+                        foreach ($rootsToremove as $unwrapNamespace) {
+                            $file_contents = str_replace(" \\$unwrapNamespace\\", " \\", $file_contents);
+                            $file_contents = str_replace(" $unwrapNamespace\\", " ", $file_contents);
+                            $file_contents = str_replace("\"$unwrapNamespace\\", "\"", $file_contents);
+                            $file_contents = str_replace("\"\\$unwrapNamespace\\", "\"\\", $file_contents);
+                            $file_contents = str_replace("'$unwrapNamespace\\", "'", $file_contents);
+                            $file_contents = str_replace("'\\$unwrapNamespace\\", "'\\", $file_contents);
+                        }
+
+                        $itemFile = new \SplFileObject($item->getPathName(), "w");
+                        $itemFile->fwrite($file_contents);
+                    }
+
+                }
+            }
         }
     }
     /**
