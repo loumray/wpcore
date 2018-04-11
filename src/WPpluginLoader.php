@@ -112,6 +112,10 @@ class WPpluginLoader extends ClassLoader
                 
                 // print($supplier.' to '.$new.PHP_EOL);
                 // print($wrappingPath.PHP_EOL);
+                if (empty($wrappingPath)) {
+                    print "Empty Directory: $wrappingPath - skipping".PHP_EOL; 
+                    continue;
+                }
                 $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wrappingPath), \RecursiveIteratorIterator::SELF_FIRST);
                 foreach ($fileList as $item) {
                     if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
@@ -140,7 +144,15 @@ class WPpluginLoader extends ClassLoader
                         }
 
                         foreach ($supplierstochange as $supplier => $new) {
-
+                            // if ($item->getBaseName() != 'AbstractServiceBase.php') {
+                            //     continue;
+                            // }
+                            // if ($supplier != 'Onecodeshop\RMLBase\v120') {
+                            //     continue;
+                            // }
+                            // print($item->getBaseName().": replace $supplier with $new".PHP_EOL);
+                            // // print 
+                            // continue;
                             //Added to handle sub namesapce want to access to root namespace
                             $file_contents = str_replace(" \\$supplier\\", " \\$new\\", $file_contents);
         
@@ -150,11 +162,13 @@ class WPpluginLoader extends ClassLoader
                             $file_contents = str_replace("'$supplier\\", "'$new\\", $file_contents);
                             $file_contents = str_replace("'\\$supplier\\", "'\\$new\\", $file_contents);
                             $file_contents = str_replace(" $supplier;", " $new;", $file_contents);
+                            $file_contents = str_replace("use $supplier", "use $new", $file_contents);
 
                             //remove unwanted replacements
                             $file_contents = str_replace("as $new", "as $supplier", $file_contents);
                         }
 
+                        // print_r($file_contents);
                         $itemFile = new \SplFileObject($item->getPathName(), "w");
                         $itemFile->fwrite($file_contents);
                     }
@@ -191,6 +205,10 @@ class WPpluginLoader extends ClassLoader
                 $wrappingPath = realpath($vendorDir.DIRECTORY_SEPARATOR.$deppackage.DIRECTORY_SEPARATOR.$relDir);
                 echo "----- unwrapping $deppackage -------".$deppackage.DIRECTORY_SEPARATOR.$relDir.PHP_EOL;
 
+                if (empty($wrappingPath)) {
+                    print "Empty Directory: $wrappingPath - skipping".PHP_EOL; 
+                    continue;
+                }
                 $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wrappingPath), \RecursiveIteratorIterator::SELF_FIRST);
                 foreach ($fileList as $item) {
                     if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
