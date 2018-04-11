@@ -15,7 +15,7 @@ namespace WPCore;
  *
  * @author Louis-Michel Raynauld <louismichel@pweb.ca>
  */
-class Config 
+class Config
 {
     public static $instance;
 

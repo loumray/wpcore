@@ -27,7 +27,7 @@ class RegisterScript extends WPaction
     {
         $this->script = $script;
 
-        parent::__construct('wp_enqueue_scripts',5,1);
+        parent::__construct('wp_enqueue_scripts', 5, 1);
     }
 
     public function action()

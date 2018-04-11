@@ -30,7 +30,6 @@ class WPposttype extends WPaction
 
         $defaults = array();
         $this->args = wp_parse_args($args, $defaults);
-
     }
 
     public function setArg($arg, $value)
@@ -47,8 +46,8 @@ class WPposttype extends WPaction
         }
 
         return $default;
-        
     }
+    
     public function getSlug()
     {
         return $this->slug;
