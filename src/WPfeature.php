@@ -111,6 +111,12 @@ abstract class WPfeature implements WPhook
         }
     }
 
+    public function registerScriptsStyles()
+    {
+        $this->HThemeScript->registerScriptsStyles();
+        $this->HAdminScript->registerScriptsStyles();
+    }
+
     public function addScript(WPscript $script)
     {
         if ($script instanceof WPscriptTheme) {
@@ -141,6 +147,8 @@ abstract class WPfeature implements WPhook
             $hook->init();
         }
 
+        // $hook->setParentFeature($this);
+        
         $this->hooks[] = $hook;
         $hook->isHooked = true;
     }

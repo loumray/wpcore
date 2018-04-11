@@ -22,39 +22,58 @@ use WPCore\WPstyle;
 
 class ThemeScript extends WPaction
 {
+    protected $scripts = array();
+    protected $styles  = array();
 
-  protected $scripts = array();
-  protected $styles  = array();
-
-  public function __construct()
-  {
-    parent::__construct('wp_enqueue_scripts',100,1);
-  }
-
-  public function addScript(WPscript $script)
-  {
-    $this->scripts[] = $script;
-  }
-
-  public function addStyle(WPstyle $style)
-  {
-    $this->styles[] = $style;
-  }
-
-  public function action()
-  {
-    if (!empty($this->scripts)) {
-      foreach ($this->scripts as $script) {
-          $script->enqueue();
-      }
+    public function __construct()
+    {
+        parent::__construct('wp_enqueue_scripts', 100, 1);
     }
 
-    if (!empty($this->styles)) {
-      foreach ($this->styles as $script) {
-        $script->enqueue();
-      }
+    public function registerScriptsStyles()
+    {
+        $this->registerStyles();
+        $this->registerScripts();
     }
 
-    return null;
-  }
+    public function registerScripts()
+    {
+        foreach ($this->scripts as $script) {
+            $script->register();
+        }
+    }
+
+    public function registerStyles()
+    {
+        foreach ($this->styles as $styles) {
+            $styles->register();
+        }
+    }
+
+    public function addScript(WPscript $script)
+    {
+        $this->scripts[] = $script;
+    }
+
+    public function addStyle(WPstyle $style)
+    {
+        $this->styles[] = $style;
+    }
+
+    public function action()
+    {
+        if (!empty($this->scripts)) {
+            foreach ($this->scripts as $script) {
+                $script->enqueue();
+            }
+        }
+
+        if (!empty($this->styles)) {
+            foreach ($this->styles as $script) {
+                $script->enqueue();
+            }
+        }
+
+        return null;
+    }
 }
