@@ -32,9 +32,14 @@ class WPcustomPost implements WPpostSaveable
     {
         $this->metaprefix = $prefix;
     }
+
     public function __construct($postId)
     {
         $this->postId = $postId;
+        $post = \WP_Post::get_instance($postId);
+        if ($post !== false) {
+            $this->setPost(\WP_Post::get_instance($this->postId));
+        }
     }
 
     public function setPost(\WP_Post $post)
@@ -45,7 +50,7 @@ class WPcustomPost implements WPpostSaveable
 
     public function getPost()
     {
-        if (is_null($this->post)) {
+        if (is_null($this->post) && !empty($this->postId)) {
             $this->setPost(\WP_Post::get_instance($this->postId));
         }
 
