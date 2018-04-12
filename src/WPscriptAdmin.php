@@ -35,7 +35,6 @@ class WPscriptAdmin extends WPscript
             $admin_page[] = $admin_page;
         }
         $this->admin_page = $admin_page;
-
     }
 
     public function isNeeded($page)
@@ -50,7 +49,6 @@ class WPscriptAdmin extends WPscript
             if (empty($this->admin_page[$page])) {
                 return true;
             } elseif (isset($this->admin_page[$page]['post_type'])) {
-
                 global $post;
                 if ($post->post_type === $this->admin_page[$page]['post_type']) {
                     return true;

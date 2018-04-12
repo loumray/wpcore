@@ -20,7 +20,6 @@ use WPCore\WPaction;
 
 class WPscriptLocalize extends WPaction
 {
-
     protected $handle;
     protected $name;
     protected $data;
@@ -28,9 +27,9 @@ class WPscriptLocalize extends WPaction
     public function __construct($handle, $name, $data)
     {
         if (is_admin()) {
-            parent::__construct('admin_enqueue_scripts',10000,1);
+            parent::__construct('admin_enqueue_scripts', 10000, 1);
         } else {
-            parent::__construct('wp_enqueue_scripts',10000,1);
+            parent::__construct('wp_enqueue_scripts', 10000, 1);
         }
         
         $this->handle = $handle;

@@ -138,7 +138,8 @@ abstract class WPfeature implements WPhook
     public function hook(WPhook $hook)
     {
         if ($hook instanceof WPfeature) {
-            //If Feature is already hooked by another, skip updating base url, so that same feature use same base url everywhere it is hooked
+            //If Feature is already hooked by another, skip updating base url,
+            //so that same feature use same base url everywhere it is hooked
             if (!$hook->isHooked) {
                 $relPath = substr($hook->getBasePath(), strlen($this->getBasePath()));
                 $hook->setBaseUrl($this->getBaseUrl().$relPath);

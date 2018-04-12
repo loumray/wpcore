@@ -17,7 +17,7 @@ namespace WPCore\admin;
  */
 interface WPpostSaveable
 {
-    static public function create($postId);
+    public static function create($postId);
     public function get($key);
     public function set($key, $value);
     public function fetch();

@@ -43,19 +43,17 @@ class WPpluginLoader extends ClassLoader
         $deppackages = array();
         $newRootNamespaces = array();
         foreach ($installedPackages as $installedPackage => $newRootNamespace) {
-                $deppackages = array_merge($deppackages, $installedFile->getNamespaces($installedPackage));
+            $deppackages = array_merge($deppackages, $installedFile->getNamespaces($installedPackage));
                 
-                foreach ($deppackages as $deppackage => $src) {
-                    if (isset($newRootNamespaces[$deppackage])) {
-                        continue;   
-                    }
-                    $newRootNamespaces[$deppackage] = $newRootNamespace;
+            foreach ($deppackages as $deppackage => $src) {
+                if (isset($newRootNamespaces[$deppackage])) {
+                    continue;
                 }
-            
+                $newRootNamespaces[$deppackage] = $newRootNamespace;
+            }
         }
         $supplierstochange = array();
         foreach ($deppackages as $deppackage => $autoloads) {
-            
             $newRootNamespace = $newRootNamespaces[$deppackage];
             // print($deppackage.' - '.$newRootNamespace.PHP_EOL);
             // continue;
@@ -113,10 +111,15 @@ class WPpluginLoader extends ClassLoader
                 // print($supplier.' to '.$new.PHP_EOL);
                 // print($wrappingPath.PHP_EOL);
                 if (empty($wrappingPath)) {
-                    print "Empty Directory: $wrappingPath - skipping".PHP_EOL; 
+                    print "Empty Directory: $wrappingPath - skipping".PHP_EOL;
                     continue;
                 }
-                $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wrappingPath), \RecursiveIteratorIterator::SELF_FIRST);
+                $fileList = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator(
+                        $wrappingPath
+                    ),
+                    \RecursiveIteratorIterator::SELF_FIRST
+                );
                 foreach ($fileList as $item) {
                     if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
                         if (is_writable($item->getPathName()) === false) {
@@ -139,7 +142,10 @@ class WPpluginLoader extends ClassLoader
 
                             //Make sure it was not wrapped already
                             if (strpos($file_contents, $new) !== false) {
-                                throw new \Exception('Double wrapping? file already contains namespace '.$new.' @'.$pos.' in '.$item->getPathName());
+                                throw new \Exception(
+                                    'Double wrapping? file already contains namespace '.
+                                    $new.' @'.$pos.' in '.$item->getPathName()
+                                );
                             }
                         }
 
@@ -151,7 +157,7 @@ class WPpluginLoader extends ClassLoader
                             //     continue;
                             // }
                             // print($item->getBaseName().": replace $supplier with $new".PHP_EOL);
-                            // // print 
+                            // // print
                             // continue;
                             //Added to handle sub namesapce want to access to root namespace
                             $file_contents = str_replace(" \\$supplier\\", " \\$new\\", $file_contents);
@@ -175,7 +181,6 @@ class WPpluginLoader extends ClassLoader
                 }
             }
         }
-        
     }
 
     public static function unwrapPackage($packages, $vendorDir = '')
@@ -206,10 +211,15 @@ class WPpluginLoader extends ClassLoader
                 echo "----- unwrapping $deppackage -------".$deppackage.DIRECTORY_SEPARATOR.$relDir.PHP_EOL;
 
                 if (empty($wrappingPath)) {
-                    print "Empty Directory: $wrappingPath - skipping".PHP_EOL; 
+                    print "Empty Directory: $wrappingPath - skipping".PHP_EOL;
                     continue;
                 }
-                $fileList = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wrappingPath), \RecursiveIteratorIterator::SELF_FIRST);
+                $fileList = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator(
+                        $wrappingPath
+                    ),
+                    \RecursiveIteratorIterator::SELF_FIRST
+                );
                 foreach ($fileList as $item) {
                     if ($item->isFile() && stripos($item->getExtension(), 'php') !== false) {
                         if (is_writable($item->getPathName()) === false) {
@@ -245,7 +255,6 @@ class WPpluginLoader extends ClassLoader
                         $itemFile = new \SplFileObject($item->getPathName(), "w");
                         $itemFile->fwrite($file_contents);
                     }
-
                 }
             }
         }
@@ -257,7 +266,8 @@ class WPpluginLoader extends ClassLoader
      * @param string       $prefix  The prefix/namespace, with trailing '\\'
      * @param array|string $paths   The PSR-4 base directories
      */
-    public function setPsr4($prefix, $paths) {
+    public function setPsr4($prefix, $paths)
+    {
         if (!$prefix) {
             $this->fallbackDirsPsr4 = (array) $paths;
         } else {
@@ -452,7 +462,6 @@ class WPpluginLoader extends ClassLoader
             foreach ($this->prefixesPsr0[$first] as $prefix => $dirs) {
                 if (0 === strpos($class, $prefix)) {
                     foreach ($dirs as $dir) {
-
                         if (file_exists($file = $dir . DIRECTORY_SEPARATOR . $logicalPathPsr0)) {
                             return $file;
                         }

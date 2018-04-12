@@ -20,15 +20,14 @@ use WPCore\WPaction;
 
 class InsertPost extends WPaction
 {
+    public function __construct()
+    {
+        parent::__construct('wp_insert_post', 100, 1);
+    }
 
-  public function __construct()
-  {
-    parent::__construct('wp_insert_post',100,1);
-  }
-
-  //In dev todo
-  public function action()
-  {
-    return null;
-  }
+    //In dev todo
+    public function action()
+    {
+        return null;
+    }
 }

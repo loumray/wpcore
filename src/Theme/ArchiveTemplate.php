@@ -30,9 +30,9 @@ class ArchiveTemplate extends WPfilter
         $template = func_get_arg(0);
         $templateFile = basename($template);
 
-        if (is_post_type_archive()  && 
+        if (is_post_type_archive()  &&
             ($templateFile != 'archive-'.$this->postType.'.php')) {
-            $postType = get_query_var( 'post_type' );
+            $postType = get_query_var('post_type');
 
             if ($postType == $this->postType) {
                 return $this->template;

@@ -37,7 +37,7 @@ class WPadminNotice extends WPaction
     public function action()
     {
         $current_user = wp_get_current_user();
-        if (isset($current_user->data->wp_capabilities['administrator'] ) ||
+        if (isset($current_user->data->wp_capabilities['administrator']) ||
             in_array("administrator", $current_user->roles)
         ) {
             if (!empty($this->view)) {
@@ -58,8 +58,13 @@ class WPadminNotice extends WPaction
         }
         foreach ($notices as $msg) {
             ?>
-            <div class="<?php echo $this->classtype; ?>"><p><?php echo $msg; ?></p></div>
-            <?php
+<div class="<?php echo $this->classtype; ?>">
+    <p>
+        <?php echo $msg; ?>
+    </p>
+</div>
+<?php
         }
     }
 }
+?>

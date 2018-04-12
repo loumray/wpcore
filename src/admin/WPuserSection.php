@@ -83,7 +83,6 @@ class WPuserSection extends WPaction
                 } else {
                     delete_user_meta($userId, $field->attr('name'));
                 }
-                
             }
         }
 
@@ -105,7 +104,6 @@ class WPuserSection extends WPaction
                 }
             }
         }
-
     }
 
 
@@ -118,7 +116,6 @@ class WPuserSection extends WPaction
 
             $this->view->setData($data);
             $this->view->show();
-
         } elseif (!empty($this->fieldSet)) {
             foreach ($this->fieldSet as $field) {
                 $field->attr('value', esc_attr(get_the_author_meta($field->attr('name'), $user->ID)));
@@ -132,21 +129,26 @@ class WPuserSection extends WPaction
         <table class="form-table">
             <tr>
                 <th><label for="facebook_profile">Facebook Profile</label></th>
-                <td><input type="text" name="facebook_profile" value="<?php echo esc_attr(get_the_author_meta('facebook_profile', $user->ID)); ?>" class="regular-text" /></td>
+                <td><input type="text" name="facebook_profile"
+                value="<?php echo esc_attr(get_the_author_meta('facebook_profile', $user->ID)); ?>"
+                class="regular-text" /></td>
             </tr>
 
             <tr>
                 <th><label for="twitter_profile">Twitter Profile</label></th>
-                <td><input type="text" name="twitter_profile" value="<?php echo esc_attr(get_the_author_meta('twitter_profile', $user->ID)); ?>" class="regular-text" /></td>
+                <td><input type="text" name="twitter_profile"
+                value="<?php echo esc_attr(get_the_author_meta('twitter_profile', $user->ID)); ?>"
+                class="regular-text" /></td>
             </tr>
 
             <tr>
                 <th><label for="google_profile">Google+ Profile</label></th>
-                <td><input type="text" name="google_profile" value="<?php echo esc_attr(get_the_author_meta('google_profile', $user->ID)); ?>" class="regular-text" /></td>
+                <td><input type="text" name="google_profile"
+                value="<?php echo esc_attr(get_the_author_meta('google_profile', $user->ID)); ?>"
+                class="regular-text" /></td>
             </tr>
         </table>
         <?php
         */
     }
-
 }

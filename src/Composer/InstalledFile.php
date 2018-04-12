@@ -45,7 +45,6 @@ class InstalledFile
                 return $package;
             }
         }
-
     }
 
     public function getRequires($packageName)
@@ -71,7 +70,6 @@ class InstalledFile
             $depandancies[] = $name;
             //Add package subsdepandacies
             $depandancies = array_merge($depandancies, $this->getRequires($name));
-            
         }
 
         return $depandancies;

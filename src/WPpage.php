@@ -18,16 +18,15 @@ namespace WPCore;
 
 class WPpage
 {
-
     protected $wpPost;
 
     public function __construct($wpPost)
     {
         $defaults = array(
-            'post_status' 		=> 'publish',
-            'post_type' 		=> 'page',
-            'post_author' 		=> 1,
-            'comment_status' 	=> 'closed'
+            'post_status'    => 'publish',
+            'post_type'      => 'page',
+            'post_author'    => 1,
+            'comment_status' => 'closed'
         );
         $this->wpPost = wp_parse_args($wpPost, $defaults);
     }
@@ -38,7 +37,12 @@ class WPpage
     public function insert()
     {
         global $wpdb;
-        $page_found = $wpdb->get_var($wpdb->prepare("SELECT ID FROM " . $wpdb->posts . " WHERE post_name = %s LIMIT 1;", $this->wpPost['post_name']));
+        $page_found = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT ID FROM " . $wpdb->posts . " WHERE post_name = %s LIMIT 1;",
+                $this->wpPost['post_name']
+            )
+        );
         if ($page_found) {
             return $page_found;
         }

@@ -18,7 +18,7 @@ namespace WPCore;
 
 class WPdb extends \PDO
 {
-    static $instance;
+    public static $instance;
 
     protected $dbhost;
     protected $dbname;
@@ -35,7 +35,6 @@ class WPdb extends \PDO
 
     public function __construct()
     {
-
         if (defined('DB_HOST')) {
             $this->dbhost = DB_HOST;
         }
@@ -51,7 +50,6 @@ class WPdb extends \PDO
 
         try {
             parent::__construct('mysql:host='.$this->dbhost.';dbname='.$this->dbname, $this->dbuser, $this->dbpass);
-
         } catch (\PDOException $e) {
             error_log("WPDb error: ".$e->getMessage());
             die();

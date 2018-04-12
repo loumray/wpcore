@@ -39,8 +39,6 @@ abstract class WPthemeCustomizer extends WPaction
         if (!is_null($livePreviewScript)) {
             $this->livePreviewScript = $livePreviewScript;
         }
-
-        
     }
 
     public function setPrefix($prefix)
@@ -87,13 +85,20 @@ abstract class WPthemeCustomizer extends WPaction
     * @param capability
     *   Optional. You can define a capability a user must have to modify this setting
     * @param theme_supports
-    *   Optional. This can be used to hide a setting if the theme lacks support for a specific feature (using add_theme_support).
+    *   Optional. This can be used to hide a setting if the theme lacks support for a specific feature
+    *   (using add_theme_support).
     * @param transport
-    *   Optional. This can be either 'refresh' (default) or 'postMessage'. Only set this to 'postMessage' if you are writing custom Javascript to control the Theme Customizer's live preview.
+    *   Optional. This can be either 'refresh' (default) or 'postMessage'. Only set this to 'postMessage'
+    *   if you are writing custom Javascript to control the Theme Customizer's live preview.
     * @param sanitize_callback
-    *   Optional. A function name to call for sanitizing the input value for this setting. The function should be of the form of a standard filter function, where it accepts the input data and returns the sanitized data.
+    *   Optional. A function name to call for sanitizing the input value for this setting. The function
+    *   should be of the form of a standard filter function, where it accepts the input data and returns
+    *   the sanitized data.
     * @param sanitize_js_callback
-    *   Optional. A function name to call for sanitizing the value for this setting for the purposes of outputting to javascript code. The function should be of the form of a standard filter function, where it accepts the input data and returns the sanitized data. This is only necessary if the data to be sent to the customizer window has a special form.
+    *   Optional. A function name to call for sanitizing the value for this setting for the purposes
+    *   of outputting to javascript code. The function should be of the form of a standard filter function,
+    *   where it accepts the input data and returns the sanitized data. This is only necessary if the data
+    *   to be sent to the customizer window has a special form.
     */
     public function addSetting($settingId, $properties)
     {

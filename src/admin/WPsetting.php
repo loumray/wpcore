@@ -55,7 +55,7 @@ class WPsetting
             $this->section,
             $this->args
         );
-    } 
+    }
 
     public function register($sanitizeCallback = 'esc_attr')
     {

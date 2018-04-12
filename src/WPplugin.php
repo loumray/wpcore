@@ -51,9 +51,13 @@ abstract class WPplugin extends WPfeature
 
             foreach ($this->getErrors() as $error) {
                 if (($error == 'WP') && (!empty($this->reqWPMsg))) {
-                    $errormsg[] = $this->reqWPMsg; //sprintf(__('%s Requirements failed. WP version must at least %s', 'loumray-plugin-starter'), $this->getName(), $this->reqWPVersion);
+                    //sprintf(__('%s Requirements failed. WP version must at least %s', 'loumray-plugin-starter'),
+                    //$this->getName(), $this->reqWPVersion);
+                    $errormsg[] = $this->reqWPMsg;
                 } elseif (($error == 'PHP') && (!empty($this->reqPHPMsg))) {
-                    $errormsg[] = $this->reqPHPMsg; //sprintf(__(__('%s Requirements failed. PHP version must at least %s', 'loumray-plugin-starter')), $this->getName(), $this->reqPHPVersion);
+                    //sprintf(__(__('%s Requirements failed. PHP version must at least %s', 'loumray-plugin-starter')),
+                    //$this->getName(), $this->reqPHPVersion);
+                    $errormsg[] = $this->reqPHPMsg;
                 }
             }
             $this->hook(new WPadminNotice($errormsg));

@@ -22,7 +22,7 @@ use WPCore\WPaction;
 
 class WPsettingsLoader extends WPaction
 {
-    static $instance;
+    public static $instance;
 
     protected $sections = array();
     protected $settings = array();
@@ -54,11 +54,11 @@ class WPsettingsLoader extends WPaction
     {
         $location = func_get_arg(0);
         $status = func_get_arg(1);
-        if ($location == admin_url( 'options-permalink.php?settings-updated=true' )) {
-            $whitelist_options = apply_filters( 'whitelist_options', array() );
+        if ($location == admin_url('options-permalink.php?settings-updated=true')) {
+            $whitelist_options = apply_filters('whitelist_options', array());
 
             if (isset($whitelist_options['permalink'])) {
-                foreach ($whitelist_options['permalink'] as $option ) {
+                foreach ($whitelist_options['permalink'] as $option) {
                     $option = trim($option);
                     $value = null;
                     if (isset($_POST[$option])) {

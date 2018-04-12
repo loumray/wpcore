@@ -30,7 +30,7 @@ class SingleTemplate extends WPfilter
         $template = func_get_arg(0);
         $templateFile = basename($template);
 
-        if (is_single() && 
+        if (is_single() &&
             ($templateFile != "single-{$this->postType}.php")
         ) {
             $object = get_queried_object();

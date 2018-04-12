@@ -46,14 +46,14 @@ class WPsettingsSection
             $this->id,
             $this->title,
             array($this, 'view'),
-            $this->pageMenuSlug 
+            $this->pageMenuSlug
         );
 
         foreach ($this->settings as $setting) {
             $setting->add();
             $setting->register();
         }
-    } 
+    }
 
     public function addSetting($id, $title, AbstractField $field = null, $args = array())
     {

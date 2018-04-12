@@ -116,7 +116,7 @@ class WPsidebar extends WPaction
      *
      * @return mixed
      */
-    public function getBefore_widget()
+    public function getBeforeWidget()
     {
         return $this->before_widget;
     }
@@ -128,7 +128,7 @@ class WPsidebar extends WPaction
      *
      * @return self
      */
-    public function setBefore_widget($before_widget)
+    public function setBeforeWidget($before_widget)
     {
         $this->before_widget = $before_widget;
 
@@ -140,7 +140,7 @@ class WPsidebar extends WPaction
      *
      * @return mixed
      */
-    public function getAfter_widget()
+    public function getAfterWidget()
     {
         return $this->after_widget;
     }
@@ -152,7 +152,7 @@ class WPsidebar extends WPaction
      *
      * @return self
      */
-    public function setAfter_widget($after_widget)
+    public function setAfterWidget($after_widget)
     {
         $this->after_widget = $after_widget;
 
@@ -164,7 +164,7 @@ class WPsidebar extends WPaction
      *
      * @return mixed
      */
-    public function getBefore_title()
+    public function getBeforeTitle()
     {
         return $this->before_title;
     }
@@ -176,7 +176,7 @@ class WPsidebar extends WPaction
      *
      * @return self
      */
-    public function setBefore_title($before_title)
+    public function setBeforeTitle($before_title)
     {
         $this->before_title = $before_title;
 
@@ -188,7 +188,7 @@ class WPsidebar extends WPaction
      *
      * @return mixed
      */
-    public function getAfter_title()
+    public function getAfterTitle()
     {
         return $this->after_title;
     }
@@ -200,7 +200,7 @@ class WPsidebar extends WPaction
      *
      * @return self
      */
-    public function setAfter_title($after_title)
+    public function setAfterTitle($after_title)
     {
         $this->after_title = $after_title;
 

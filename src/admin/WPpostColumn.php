@@ -31,7 +31,11 @@ class WPpostColumn extends WPaction
     public function header($columns)
     {
         $position = $this->position-1;
-        $columns = array_merge(array_slice($columns, 0, $position), array($this->slug => $this->title), array_slice($columns, $position));
+        $columns = array_merge(
+            array_slice($columns, 0, $position),
+            array($this->slug => $this->title),
+            array_slice($columns, $position)
+        );
 
         return $columns;
     }
@@ -45,7 +49,6 @@ class WPpostColumn extends WPaction
             add_action("manage_".$this->postType."_posts_custom_column", array($this, 'content'), 10, 2);
             add_filter("manage_edit-".$this->postType."_columns", array($this, 'header'));
         }
-        
     }
 
     public function content($columnSlug, $postId)

@@ -29,7 +29,7 @@ class WPfeaturePointer
     /**
     * targetID could be wp-admin-bar-new-content, menu-settings, menu-appearance
     * position should contain edge and align index
-    * 
+    *
     * pointerId must be lowercase
     */
     public function __construct(

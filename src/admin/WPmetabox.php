@@ -47,7 +47,6 @@ class WPmetabox extends WPaction
         $saveableClass = null,
         $callbackArgs = null
     ) {
-
         parent::__construct('add_meta_boxes', 10, 2);
 
         $this->mbId     = $mbId;
@@ -64,7 +63,9 @@ class WPmetabox extends WPaction
         if (is_null($saveableClass)) {
             $this->saveableClass = '\WPCore\WPcustomPost';
         } elseif (!in_array('WPCore\admin\WPpostSaveable', class_implements($saveableClass))) {
-            throw new \InvalidArgumentException("WPmetabox saveableClass must be the name of a class that implements WPCore\WPpostSaveable interface");
+            throw new \InvalidArgumentException(
+                "WPmetabox saveableClass must be the name of a class that implements WPCore\WPpostSaveable interface"
+            );
         }
     }
 
@@ -174,7 +175,9 @@ class WPmetabox extends WPaction
                 case 'savearray':
                 case 'fieldSet':
                 case 'hiddenNonce':
-                    throw new \InvalidArgumentException('The index '.$key. ' is used and will be overwritten. Please use a different one.');
+                    throw new \InvalidArgumentException(
+                        'The index '.$key. ' is used and will be overwritten. Please use a different one.'
+                    );
                     break;
                 default:
                     break;
@@ -204,7 +207,6 @@ class WPmetabox extends WPaction
 
             $this->view->setData($data);
             $this->view->show();
-
         } elseif (!empty($this->fieldSet)) {
             foreach ($this->fieldSet as $field) {
                 $field->attr('value', $instance->get($field->attr('name')));
@@ -213,7 +215,6 @@ class WPmetabox extends WPaction
             echo $hiddenNonce;
             $this->fieldSet->render();
         }
-        
     }
 
     /**

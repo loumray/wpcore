@@ -31,7 +31,6 @@ class WPtaxonomy extends WPaction
         //TODO setup common defaults
         $defaults = array();
         $this->args = wp_parse_args($args, $defaults);
-
     }
 
     public function action()
