@@ -48,7 +48,7 @@ class WPstyleTheme extends WPstyle
         }
     }
 
-    public function setOverrideDir($subDir)
+    public function setOverrideDir($subdir)
     {
         $this->overrideDir = $subdir.'/';
         return $this;
