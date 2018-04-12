@@ -52,7 +52,6 @@ class WPdb extends \PDO
             parent::__construct('mysql:host='.$this->dbhost.';dbname='.$this->dbname, $this->dbuser, $this->dbpass);
         } catch (\PDOException $e) {
             error_log("WPDb error: ".$e->getMessage());
-            die();
         }
     }
 }

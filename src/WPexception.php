@@ -17,7 +17,7 @@ namespace WPCore;
  */
 class WPexception extends \Exception
 {
-    public function __construct($message, $code = 0, Exception $previous = null)
+    public function __construct($message, $code = 0, \Exception $previous = null)
     {
         $message = "WP exception: ".$message;
         parent::__construct($message, $code, $previous);

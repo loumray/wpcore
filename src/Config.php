@@ -42,7 +42,7 @@ class Config
     }
 
     /*
-    * @return default if value option does not exist
+    * @return var if value option does not exist
     */
     public function get($key, $default = null)
     {

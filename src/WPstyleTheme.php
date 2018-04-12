@@ -46,8 +46,6 @@ class WPstyleTheme extends WPstyle
             default:
                 return true;
         }
-
-        return true;
     }
 
     public function setOverrideDir($subDir)

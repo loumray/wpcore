@@ -43,8 +43,6 @@ class WPscriptTheme extends WPscript
             default:
                 return true;
         }
-
-        return true;
     }
 
     public function enqueue()

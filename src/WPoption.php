@@ -64,7 +64,7 @@ class WPoption
         $this->fetched = true;
     }
     /*
-     * @return True if option has been deleted, false if not or if deletion failed.
+     * @return bool if option has been deleted, false if not or if deletion failed.
     */
     public function delete()
     {

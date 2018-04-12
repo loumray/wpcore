@@ -27,6 +27,9 @@ abstract class WPfeature implements WPhook
 
     private $base_path;
     private $base_url;
+    private $css_url;
+    private $js_url;
+    private $img_url;
 
     private $baseRelurl;
 

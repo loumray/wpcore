@@ -151,30 +151,6 @@ class WPsetting
     }
 
     /**
-     * Gets the value of view.
-     *
-     * @return mixed
-     */
-    public function getView()
-    {
-        return $this->view;
-    }
-
-    /**
-     * Sets the value of view.
-     *
-     * @param mixed $view the view
-     *
-     * @return self
-     */
-    public function setView($view)
-    {
-        $this->view = $view;
-
-        return $this;
-    }
-
-    /**
      * Gets the value of section.
      *
      * @return mixed

@@ -26,6 +26,7 @@ class WPuserSection extends WPaction
     protected $fieldSet;
     protected $metas = array();
     protected $view;
+    protected $caps = array();
     protected $showOnProfile = true;
 
     public function __construct($showOnProfile = true)

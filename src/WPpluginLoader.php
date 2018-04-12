@@ -141,7 +141,7 @@ class WPpluginLoader extends ClassLoader
                             }
 
                             //Make sure it was not wrapped already
-                            if (strpos($file_contents, $new) !== false) {
+                            if ($pos = strpos($file_contents, $new) !== false) {
                                 throw new \Exception(
                                     'Double wrapping? file already contains namespace '.
                                     $new.' @'.$pos.' in '.$item->getPathName()
