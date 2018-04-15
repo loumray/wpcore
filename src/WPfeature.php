@@ -21,7 +21,8 @@ use WPCore\hooks\ThemeScript;
 
 abstract class WPfeature implements WPhook
 {
-
+    use HasParentFeature;
+    
     protected $name;
     protected $slug = 'pweb';
 
@@ -151,7 +152,7 @@ abstract class WPfeature implements WPhook
             $hook->init();
         }
 
-        // $hook->setParentFeature($this);
+        $hook->setParentFeature($this);
         
         $this->hooks[] = $hook;
         $hook->isHooked = true;

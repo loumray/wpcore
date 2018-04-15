@@ -17,6 +17,8 @@ namespace WPCore;
  */
 abstract class WPaction implements WPhook
 {
+    use HasParentFeature;
+    
     protected $tag;
     protected $priority;
     protected $argsCount;

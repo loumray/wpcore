@@ -17,6 +17,8 @@ namespace WPCore;
  */
 abstract class WPajaxCall implements WPhook
 {
+    use HasParentFeature;
+    
     protected $jsHandle;
     protected $slug;
     protected $admin;
