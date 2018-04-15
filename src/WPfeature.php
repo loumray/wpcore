@@ -121,6 +121,16 @@ abstract class WPfeature implements WPhook
         $this->HAdminScript->registerScriptsStyles();
     }
 
+    public function getThemeScriptHook()
+    {
+        return $this->HThemeScript;
+    }
+
+    public function getAdminScriptHook()
+    {
+        return $this->HAdminScript;
+    }
+
     public function addScript(WPscript $script)
     {
         if ($script instanceof WPscriptTheme) {
@@ -136,6 +146,24 @@ abstract class WPfeature implements WPhook
             $this->HThemeScript->addStyle($style);
         } elseif ($style instanceof WPstyleAdmin) {
             $this->HAdminScript->addStyle($style);
+        }
+    }
+
+    public function initAjaxCalls()
+    {
+        if ($this->enabled !== true) {
+            return;
+        }
+
+        if (empty($this->hooks)) {
+            return;
+        }
+
+        foreach ($this->hooks as $hook) {
+            if (!$hook instanceof WPajaxCall) {
+                continue;
+            }
+            $hook->init();
         }
     }
 
