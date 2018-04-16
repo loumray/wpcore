@@ -180,7 +180,9 @@ abstract class WPfeature implements WPhook
             $hook->init();
         }
 
-        $hook->setParentFeature($this);
+        if (method_exists($hook, 'setParentFeature')) {
+            $hook->setParentFeature($this);
+        }
         
         $this->hooks[] = $hook;
         $hook->isHooked = true;
