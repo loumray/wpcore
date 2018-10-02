@@ -106,7 +106,7 @@ class WPpluginLoader extends ClassLoader
                 //Path of files to wrap
                 $wrappingPath = realpath($vendorDir.DIRECTORY_SEPARATOR.$deppackage.DIRECTORY_SEPARATOR.$relDir);
 
-                echo "----- wrapping package $deppackage -------".$deppackage.DIRECTORY_SEPARATOR.$relDir.PHP_EOL;
+                echo "----- wrapping package $deppackage ------- ".$deppackage.DIRECTORY_SEPARATOR.$relDir.PHP_EOL;
                 
                 // print($supplier.' to '.$new.PHP_EOL);
                 // print($wrappingPath.PHP_EOL);
@@ -150,15 +150,7 @@ class WPpluginLoader extends ClassLoader
                         }
 
                         foreach ($supplierstochange as $supplier => $new) {
-                            // if ($item->getBaseName() != 'AbstractServiceBase.php') {
-                            //     continue;
-                            // }
-                            // if ($supplier != 'Onecodeshop\RMLBase\v120') {
-                            //     continue;
-                            // }
-                            // print($item->getBaseName().": replace $supplier with $new".PHP_EOL);
-                            // // print
-                            // continue;
+                            // print $supplier .' -> '.$new. PHP_EOL;
                             //Added to handle sub namesapce want to access to root namespace
                             $file_contents = str_replace(" \\$supplier\\", " \\$new\\", $file_contents);
         
@@ -172,8 +164,14 @@ class WPpluginLoader extends ClassLoader
 
                             //remove unwanted replacements
                             $file_contents = str_replace("as $new", "as $supplier", $file_contents);
-                        }
 
+                            //Replace if in text form (Ex. parent\\namespace), if supplier is multiple namespaced
+                            if (strpos($supplier, '\\') !== false) {
+                                $textsupplier = addslashes($supplier);
+                                $textnew      = addslashes($new);
+                                $file_contents = str_replace("$textsupplier", "$textnew", $file_contents);
+                            }
+                        }
                         // print_r($file_contents);
                         $itemFile = new \SplFileObject($item->getPathName(), "w");
                         $itemFile->fwrite($file_contents);
@@ -244,6 +242,11 @@ class WPpluginLoader extends ClassLoader
 
                         //then remove root for to unwrap "broken" appearances of namespace
                         foreach ($rootsToremove as $unwrapNamespace) {
+                            //Replace if in text form (Ex. parent\\namespace)
+                            // $textsupplier = addslashes($supplier);
+                            // $textnew      = addslashes($new);
+                            $file_contents = str_replace("$unwrapNamespace\\\\", "", $file_contents);
+
                             $file_contents = str_replace(" \\$unwrapNamespace\\", " \\", $file_contents);
                             $file_contents = str_replace(" $unwrapNamespace\\", " ", $file_contents);
                             $file_contents = str_replace("\"$unwrapNamespace\\", "\"", $file_contents);
