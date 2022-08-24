@@ -72,4 +72,14 @@ class WPuser
         }
         return $changed;
     }
+
+    public function can($capability)
+    {
+        return $this->wpuser->has_cap($capability);
+    }
+
+    public function cant($capability)
+    {
+        return !$this->can($capability);
+    }
 }
